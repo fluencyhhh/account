@@ -8,9 +8,11 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import com.zhangjingbo.account.controller.AccountController?>
 
 <?import javafx.scene.control.DateCell?>
 <?import com.sun.javafx.scene.control.skin.DatePickerContent?>
+<?import javafx.scene.text.Text?>
 <AnchorPane prefHeight="803.0" prefWidth="1304.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zhangjingbo.account.controller.AccountController">
    <children>
       <Accordion layoutX="81.0" layoutY="110.0" />
