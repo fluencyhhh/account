@@ -7,6 +7,7 @@ import com.zhangjingbo.account.service.AccountInfoService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class AccountInfoServiceImpl extends ServiceImpl implements AccountInfoService {
@@ -16,5 +17,9 @@ public class AccountInfoServiceImpl extends ServiceImpl implements AccountInfoSe
     public int saveAccountInfo(AccountInfo accountInfo) {
         System.out.println(accountInfo);
         return accountInfoMapper.saveAccountInfo(accountInfo);
+    }
+
+    public List<AccountInfo> queryAllAccountInfo(){
+        return accountInfoMapper.queryAllAccountInfo();
     }
 }

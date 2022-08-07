@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import javax.xml.soap.Text;
 import java.awt.event.ActionEvent;
 import java.util.Date;
+import java.util.List;
 
 @FXMLController
 public class AccountController {
@@ -90,6 +91,11 @@ public class AccountController {
         }
         System.out.println(accountInfo);
         accountInfoService.saveAccountInfo(accountInfo);
+    }
+
+    public void queryAllAccountInfo(){
+        List<AccountInfo> accountInfoList = accountInfoService.queryAllAccountInfo();
+        System.out.println(accountInfoList);
     }
 
 }

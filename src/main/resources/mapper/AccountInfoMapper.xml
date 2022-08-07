@@ -31,4 +31,8 @@
              #{accountInfo.accountCredit},
              #{accountInfo.balance})
     </insert>
+
+    <select id="queryAllAccountInfo" resultType="com.zhangjingbo.account.entity.AccountInfo">
+        select * from MAIN_ACCOUNT order by accountId
+    </select>
 </mapper>
