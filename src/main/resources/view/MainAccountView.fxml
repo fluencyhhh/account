@@ -5,65 +5,110 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import com.zhangjingbo.account.controller.AccountController?>
 
-<?import javafx.scene.control.DateCell?>
-<?import com.sun.javafx.scene.control.skin.DatePickerContent?>
-<?import javafx.scene.text.Text?>
-<AnchorPane prefHeight="803.0" prefWidth="1304.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zhangjingbo.account.controller.AccountController">
-   <children>
-      <Accordion layoutX="81.0" layoutY="110.0" />
-      <Accordion layoutX="88.0" layoutY="120.0" />
-      <ButtonBar layoutX="153.0" layoutY="80.0" prefHeight="40.0" prefWidth="200.0" />
-      <Accordion layoutX="3.0" layoutY="5.0" prefHeight="794.0" prefWidth="1298.0">
-        <panes>
-          <TitledPane animated="false" text="查询">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
-          </TitledPane>
-          <TitledPane animated="false" text="数据录入">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <Label layoutX="104.0" layoutY="58.0" text="时间" />
-                        <DatePicker layoutX="241.0" layoutY="54.0" fx:id="accountTime" />
-                        <Label layoutX="104.0" layoutY="108.0" text="名称" />
-                        <TextField layoutX="241.0" layoutY="104.0" fx:id="accountName" />
-                        <Label layoutX="104.0" layoutY="155.0" text="名目" />
-                        <TextField layoutX="241.0" layoutY="151.0" fx:id="accountItem" />
-                        <Label layoutX="104.0" layoutY="209.0" text="人物-明细-单位" />
-                        <TextField layoutX="241.0" layoutY="205.0" fx:id="itemDetail" />
-                        <Label layoutX="104.0" layoutY="263.0" text="项目名称" />
-                        <TextField layoutX="241.0" layoutY="259.0" fx:id="itemName" />
-                        <Label layoutX="104.0" layoutY="314.0" text="经办人" />
-                        <TextField layoutX="241.0" layoutY="310.0" fx:id="operator" />
-                        <Label layoutX="680.0" layoutY="58.0" text="类型" />
-                        <TextField layoutX="801.0" layoutY="54.0" fx:id="AccountType" />
-                        <Label layoutX="680.0" layoutY="108.0" text="凭证" />
-                        <TextField layoutX="801.0" layoutY="104.0" fx:id="accountVoucher" />
-                        <Label layoutX="680.0" layoutY="155.0" text="号码" />
-                        <TextField layoutX="801.0" layoutY="151.0" fx:id="accountNumber" />
-                        <Label layoutX="680.0" layoutY="209.0" text="借金额" />
-                        <TextField layoutX="801.0" layoutY="205.0" fx:id="accountDebit" />
-                        <Label layoutX="680.0" layoutY="263.0" text="贷金额" />
-                        <TextField layoutX="801.0" layoutY="259.0" fx:id="accountCredit" />
-                        <Label layoutX="680.0" layoutY="314.0" text="余额" />
-                        <TextField layoutX="801.0" layoutY="310.0" fx:id="balance" />
-                        <Button layoutX="334.0" layoutY="390.0" mnemonicParsing="false" onAction="#saveAccountInfo" text="提交" />
-                     </children>
-                  </AnchorPane>
-            </content>
-          </TitledPane>
-          <TitledPane animated="false" text="数据导出">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
-          </TitledPane>
-        </panes>
-      </Accordion>
-   </children>
+<AnchorPane prefHeight="803.0" prefWidth="1304.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.zhangjingbo.account.controller.AccountController">
+    <children>
+        <Accordion layoutX="81.0" layoutY="110.0"/>
+        <Accordion layoutX="88.0" layoutY="120.0"/>
+        <ButtonBar layoutX="153.0" layoutY="80.0" prefHeight="40.0" prefWidth="200.0"/>
+        <Accordion layoutX="3.0" layoutY="5.0" prefHeight="794.0" prefWidth="1298.0">
+            <panes>
+                <TitledPane animated="false" text="查询">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <Label layoutX="104.0" layoutY="22.0" text="时间"/>
+                                <DatePicker fx:id="selectAccountTime" layoutX="209.0" layoutY="18.0"/>
+                                <Label layoutX="104.0" layoutY="58.0" text="名称"/>
+                                <TextField fx:id="selectAccountName" layoutX="209.0" layoutY="54.0"/>
+                                <Label layoutX="104.0" layoutY="97.0" text="名目"/>
+                                <TextField fx:id="selectAccountItem" layoutX="209.0" layoutY="93.0"/>
+                                <Label layoutX="76.0" layoutY="133.0" text="人物-明细-单位"/>
+                                <TextField fx:id="selectItemDetail" layoutX="209.0" layoutY="129.0"/>
+                                <Label layoutX="94.0" layoutY="171.0" text="项目名称"/>
+                                <TextField fx:id="selectItemName" layoutX="209.0" layoutY="167.0"/>
+                                <Label layoutX="100.0" layoutY="202.0" text="经办人"/>
+                                <TextField fx:id="selectOperator" layoutX="209.0" layoutY="198.0"/>
+                                <Label layoutX="486.0" layoutY="22.0" text="类型"/>
+                                <TextField fx:id="selectAccountType" layoutX="555.0" layoutY="18.0"/>
+                                <Label layoutX="486.0" layoutY="58.0" text="凭证"/>
+                                <TextField fx:id="selectAccountVoucher" layoutX="555.0" layoutY="54.0"/>
+                                <Label layoutX="486.0" layoutY="97.0" text="号码"/>
+                                <TextField fx:id="selectAccountNumber" layoutX="555.0" layoutY="93.0"/>
+                                <Label layoutX="480.0" layoutY="133.0" text="借金额"/>
+                                <TextField fx:id="selectAccountDebit" layoutX="555.0" layoutY="129.0"/>
+                                <Label layoutX="480.0" layoutY="171.0" text="贷金额"/>
+                                <TextField fx:id="selectAccountCredit" layoutX="555.0" layoutY="167.0"/>
+                                <Label layoutX="486.0" layoutY="202.0" text="余额"/>
+                                <TextField fx:id="selectBalance" layoutX="555.0" layoutY="198.0"/>
+                                <Button layoutX="797.0" layoutY="198.0" mnemonicParsing="false" onAction="#queryAccountInfoByParam" text="查询"/>
+<!--                                <Button layoutX="886.0" layoutY="198.0" mnemonicParsing="false" onAction="#exportAccountInfoByParam" text="导出"/>-->
+                                <TableView fx:id="accountInfoTable" layoutX="-4.0" layoutY="229.0" prefHeight="497.0" prefWidth="1298.0">
+                                    <columns>
+                                        <TableColumn prefWidth="75.0" text="序号" fx:id="accountIdResult"/>
+                                        <TableColumn prefWidth="75.0" text="时间" fx:id="accountTimeResult"/>
+                                        <TableColumn prefWidth="100.0" text="名称" fx:id="accountNameResult"/>
+                                        <TableColumn prefWidth="100.0" text="名目" fx:id="accountItemResult"/>
+                                        <TableColumn prefWidth="200.0" text="人物-明细-单位" fx:id="itemDetailResult"/>
+                                        <TableColumn prefWidth="125.0" text="项目名称" fx:id="itemNameResult"/>
+                                        <TableColumn prefWidth="75.0" text="经办人" fx:id="operatorResult"/>
+                                        <TableColumn prefWidth="75.0" text="类型" fx:id="accountTypeResult"/>
+                                        <TableColumn prefWidth="100.0" text="凭证" fx:id="accountVoucherResult"/>
+                                        <TableColumn prefWidth="150.0" text="号码" fx:id="accountNumberResult"/>
+                                        <TableColumn prefWidth="75.0" text="借金额" fx:id="accountDebitResult"/>
+                                        <TableColumn prefWidth="75.0" text="贷金额" fx:id="accountCreditResult"/>
+                                        <TableColumn prefWidth="75.0" text="余额" fx:id="balanceResult"/>
+                                    </columns>
+                                </TableView>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </TitledPane>
+                <TitledPane animated="false" text="数据录入">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <Label layoutX="104.0" layoutY="58.0" text="时间"/>
+                                <DatePicker fx:id="accountTime" layoutX="241.0" layoutY="54.0"/>
+                                <Label layoutX="104.0" layoutY="108.0" text="名称"/>
+                                <TextField fx:id="accountName" layoutX="241.0" layoutY="104.0"/>
+                                <Label layoutX="104.0" layoutY="155.0" text="名目"/>
+                                <TextField fx:id="accountItem" layoutX="241.0" layoutY="151.0"/>
+                                <Label layoutX="104.0" layoutY="209.0" text="人物-明细-单位"/>
+                                <TextField fx:id="itemDetail" layoutX="241.0" layoutY="205.0"/>
+                                <Label layoutX="104.0" layoutY="263.0" text="项目名称"/>
+                                <TextField fx:id="itemName" layoutX="241.0" layoutY="259.0"/>
+                                <Label layoutX="104.0" layoutY="314.0" text="经办人"/>
+                                <TextField fx:id="operator" layoutX="241.0" layoutY="310.0"/>
+                                <Label layoutX="680.0" layoutY="58.0" text="类型"/>
+                                <TextField fx:id="accountType" layoutX="801.0" layoutY="54.0"/>
+                                <Label layoutX="680.0" layoutY="108.0" text="凭证"/>
+                                <TextField fx:id="accountVoucher" layoutX="801.0" layoutY="104.0"/>
+                                <Label layoutX="680.0" layoutY="155.0" text="号码"/>
+                                <TextField fx:id="accountNumber" layoutX="801.0" layoutY="151.0"/>
+                                <Label layoutX="680.0" layoutY="209.0" text="借金额"/>
+                                <TextField fx:id="accountDebit" layoutX="801.0" layoutY="205.0"/>
+                                <Label layoutX="680.0" layoutY="263.0" text="贷金额"/>
+                                <TextField fx:id="accountCredit" layoutX="801.0" layoutY="259.0"/>
+                                <Label layoutX="680.0" layoutY="314.0" text="余额"/>
+                                <TextField fx:id="balance" layoutX="801.0" layoutY="310.0"/>
+                                <Button layoutX="334.0" layoutY="390.0" mnemonicParsing="false" onAction="#saveAccountInfo" text="提交"/>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </TitledPane>
+                <TitledPane animated="false" text="数据导出">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+                    </content>
+                </TitledPane>
+            </panes>
+        </Accordion>
+    </children>
 </AnchorPane>

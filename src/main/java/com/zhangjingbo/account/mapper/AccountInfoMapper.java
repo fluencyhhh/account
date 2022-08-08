@@ -12,4 +12,6 @@ public interface AccountInfoMapper extends BaseMapper {
     int saveAccountInfo(@Param("accountInfo") AccountInfo accountInfo);
 
     List<AccountInfo> queryAllAccountInfo();
+
+    List<AccountInfo> queryAccountInfoByParam(@Param("accountInfo") AccountInfo accountInfo);
 }

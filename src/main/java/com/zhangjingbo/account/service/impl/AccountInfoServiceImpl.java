@@ -14,12 +14,20 @@ public class AccountInfoServiceImpl extends ServiceImpl implements AccountInfoSe
     @Resource
     private AccountInfoMapper accountInfoMapper;
 
+    @Override
     public int saveAccountInfo(AccountInfo accountInfo) {
         System.out.println(accountInfo);
         return accountInfoMapper.saveAccountInfo(accountInfo);
     }
 
+    @Override
     public List<AccountInfo> queryAllAccountInfo(){
         return accountInfoMapper.queryAllAccountInfo();
+    }
+
+    @Override
+    public List<AccountInfo> queryAccountInfoByParam(AccountInfo accountInfo){
+        System.out.println(accountInfo);
+        return accountInfoMapper.queryAccountInfoByParam(accountInfo);
     }
 }

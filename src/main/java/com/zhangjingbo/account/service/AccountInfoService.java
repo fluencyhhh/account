@@ -10,4 +10,6 @@ public interface AccountInfoService extends IService {
     int saveAccountInfo(AccountInfo accountInfo);
 
     List<AccountInfo> queryAllAccountInfo();
+
+    List<AccountInfo> queryAccountInfoByParam(AccountInfo accountInfo);
 }
