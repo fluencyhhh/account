@@ -48,7 +48,7 @@
                                 <Label layoutX="486.0" layoutY="202.0" text="余额"/>
                                 <TextField fx:id="selectBalance" layoutX="555.0" layoutY="198.0"/>
                                 <Button layoutX="797.0" layoutY="198.0" mnemonicParsing="false" onAction="#queryAccountInfoByParam" text="查询"/>
-<!--                                <Button layoutX="886.0" layoutY="198.0" mnemonicParsing="false" onAction="#exportAccountInfoByParam" text="导出"/>-->
+                                <Button layoutX="886.0" layoutY="198.0" mnemonicParsing="false" onAction="#exportAccountInfoByParam" text="导出"/>
                                 <TableView fx:id="accountInfoTable" layoutX="-4.0" layoutY="229.0" prefHeight="497.0" prefWidth="1298.0">
                                     <columns>
                                         <TableColumn prefWidth="75.0" text="序号" fx:id="accountIdResult"/>

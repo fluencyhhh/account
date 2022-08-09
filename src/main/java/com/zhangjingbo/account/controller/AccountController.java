@@ -232,4 +232,48 @@ public class AccountController {
         accountInfoTable.getItems().setAll(getAccountInfoVo(accountInfoList));
     }
 
+    /**
+     * 按条件导出信息
+     */
+    public void exportAccountInfoByParam(){
+        AccountInfo accountInfo = new AccountInfo();
+        if (!StringUtils.isEmpty(selectAccountTime.getValue())){
+            accountInfo.setAccountTime(DateUtils.getDateBuLocalDate(selectAccountTime.getValue()));
+        }
+        if (!StringUtils.isEmpty(selectAccountName.getText())){
+            accountInfo.setAccountName(selectAccountName.getText());
+        }
+        if (!StringUtils.isEmpty(selectAccountItem.getText())){
+            accountInfo.setAccountItem(selectAccountItem.getText());
+        }
+        if (!StringUtils.isEmpty(selectItemDetail.getText())){
+            accountInfo.setItemDetail(selectItemDetail.getText());
+        }
+        if (!StringUtils.isEmpty(selectItemName.getText())){
+            accountInfo.setItemName(selectItemName.getText());
+        }
+        if (!StringUtils.isEmpty(selectOperator.getText())){
+            accountInfo.setOperator(selectOperator.getText());
+        }
+        if (!StringUtils.isEmpty(selectAccountType.getText())){
+            accountInfo.setAccountType(selectAccountType.getText());
+        }
+        if (!StringUtils.isEmpty(selectAccountVoucher.getText())){
+            accountInfo.setAccountVoucher(selectAccountVoucher.getText());
+        }
+        if (!StringUtils.isEmpty(selectAccountNumber.getText())){
+            accountInfo.setAccountNumber(selectAccountNumber.getText());
+        }
+        if (!StringUtils.isEmpty(selectAccountDebit.getText())){
+            accountInfo.setAccountDebit(Integer.valueOf(selectAccountDebit.getText()));
+        }
+        if (!StringUtils.isEmpty(selectAccountCredit.getText())){
+            accountInfo.setAccountCredit(Integer.valueOf(selectAccountCredit.getText()));
+        }
+        if (!StringUtils.isEmpty(selectBalance.getText())){
+            accountInfo.setBalance(Integer.valueOf(selectBalance.getText()));
+        }
+        accountInfoService.exportAccountInfoByParam(accountInfo);
+    }
+
 }

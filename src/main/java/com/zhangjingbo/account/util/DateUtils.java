@@ -25,4 +25,10 @@ public class DateUtils {
 
         return strDate;
     }
+    public static String getCurrentTime(){
+        Date date = new Date();
+        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyyMMddHHmmss");
+        String dateTime = dateFormat.format(date);
+        return dateTime;
+    }
 }
