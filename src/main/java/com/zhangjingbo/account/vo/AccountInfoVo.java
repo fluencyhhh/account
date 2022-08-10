@@ -4,11 +4,15 @@ import com.zhangjingbo.account.entity.AccountInfo;
 import com.zhangjingbo.account.util.DateUtils;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.Button;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
+@Data
 public class AccountInfoVo implements Serializable {
     private static final long serialVersionUID = 8659512506680957154L;
 
@@ -38,6 +42,8 @@ public class AccountInfoVo implements Serializable {
 
     private SimpleLongProperty balance;
 
+    private SimpleObjectProperty<Button> buttonTable;
+
     public AccountInfoVo(int accountId, Date accountTime, String accountName, String accountItem, String itemDetail, String itemName, String operator,
             String AccountType, String accountVoucher, String accountNumber, int accountDebit, int accountCredit, long balance) {
         this.accountId = new SimpleIntegerProperty(accountId);
@@ -55,7 +61,7 @@ public class AccountInfoVo implements Serializable {
         this.balance = new SimpleLongProperty(balance);
     }
 
-    public AccountInfoVo(AccountInfo accountInfo) {
+    public AccountInfoVo(AccountInfo accountInfo , Button button) {
         this.accountId = new SimpleIntegerProperty(accountInfo.getAccountId());
         this.accountTime = new SimpleStringProperty(DateUtils.dateToString(accountInfo.getAccountTime()));
         this.accountName = new SimpleStringProperty(accountInfo.getAccountName());
@@ -69,6 +75,7 @@ public class AccountInfoVo implements Serializable {
         this.accountDebit = new SimpleIntegerProperty(accountInfo.getAccountDebit());
         this.accountCredit = new SimpleIntegerProperty(accountInfo.getAccountCredit());
         this.balance = new SimpleLongProperty(accountInfo.getBalance());
+        this.buttonTable = new SimpleObjectProperty<Button>(button);
     }
 
     public int getAccountId() {
@@ -225,6 +232,18 @@ public class AccountInfoVo implements Serializable {
 
     public void setBalance(long balance) {
         this.balance.set(balance);
+    }
+
+    public Button getButtonTable() {
+        return buttonTable.get();
+    }
+
+    public SimpleObjectProperty<Button> buttonTableProperty() {
+        return buttonTable;
+    }
+
+    public void setButtonTable(Button buttonTable) {
+        this.buttonTable.set(buttonTable);
     }
 
     @Override

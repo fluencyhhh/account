@@ -25,6 +25,18 @@ public class DateUtils {
 
         return strDate;
     }
+
+    public static Date stringToDate(String str){
+        Date date = new Date();
+        try {
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+            date = sdf1.parse(str);
+        }catch (Exception e){
+            System.out.println("datestr 为空");
+        }
+
+        return date;
+    }
     public static String getCurrentTime(){
         Date date = new Date();
         SimpleDateFormat dateFormat= new SimpleDateFormat("yyyyMMddHHmmss");

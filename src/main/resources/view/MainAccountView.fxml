@@ -51,19 +51,19 @@
                                 <Button layoutX="886.0" layoutY="198.0" mnemonicParsing="false" onAction="#exportAccountInfoByParam" text="导出"/>
                                 <TableView fx:id="accountInfoTable" layoutX="-4.0" layoutY="229.0" prefHeight="497.0" prefWidth="1298.0">
                                     <columns>
-                                        <TableColumn prefWidth="75.0" text="序号" fx:id="accountIdResult"/>
-                                        <TableColumn prefWidth="75.0" text="时间" fx:id="accountTimeResult"/>
-                                        <TableColumn prefWidth="100.0" text="名称" fx:id="accountNameResult"/>
-                                        <TableColumn prefWidth="100.0" text="名目" fx:id="accountItemResult"/>
-                                        <TableColumn prefWidth="200.0" text="人物-明细-单位" fx:id="itemDetailResult"/>
-                                        <TableColumn prefWidth="125.0" text="项目名称" fx:id="itemNameResult"/>
-                                        <TableColumn prefWidth="75.0" text="经办人" fx:id="operatorResult"/>
-                                        <TableColumn prefWidth="75.0" text="类型" fx:id="accountTypeResult"/>
-                                        <TableColumn prefWidth="100.0" text="凭证" fx:id="accountVoucherResult"/>
-                                        <TableColumn prefWidth="150.0" text="号码" fx:id="accountNumberResult"/>
-                                        <TableColumn prefWidth="75.0" text="借金额" fx:id="accountDebitResult"/>
-                                        <TableColumn prefWidth="75.0" text="贷金额" fx:id="accountCreditResult"/>
-                                        <TableColumn prefWidth="75.0" text="余额" fx:id="balanceResult"/>
+                                        <TableColumn fx:id="buttonTable" prefWidth="75.0" text="序号" />
+                                        <TableColumn fx:id="accountTimeResult" prefWidth="75.0" text="时间"/>
+                                        <TableColumn fx:id="accountNameResult" prefWidth="100.0" text="名称"/>
+                                        <TableColumn fx:id="accountItemResult" prefWidth="100.0" text="名目"/>
+                                        <TableColumn fx:id="itemDetailResult" prefWidth="200.0" text="人物-明细-单位"/>
+                                        <TableColumn fx:id="itemNameResult" prefWidth="125.0" text="项目名称"/>
+                                        <TableColumn fx:id="operatorResult" prefWidth="75.0" text="经办人"/>
+                                        <TableColumn fx:id="accountTypeResult" prefWidth="75.0" text="类型"/>
+                                        <TableColumn fx:id="accountVoucherResult" prefWidth="100.0" text="凭证"/>
+                                        <TableColumn fx:id="accountNumberResult" prefWidth="150.0" text="号码"/>
+                                        <TableColumn fx:id="accountDebitResult" prefWidth="75.0" text="借金额"/>
+                                        <TableColumn fx:id="accountCreditResult" prefWidth="75.0" text="贷金额"/>
+                                        <TableColumn fx:id="balanceResult" prefWidth="75.0" text="余额"/>
                                     </columns>
                                 </TableView>
                             </children>
@@ -99,6 +99,7 @@
                                 <Label layoutX="680.0" layoutY="314.0" text="余额"/>
                                 <TextField fx:id="balance" layoutX="801.0" layoutY="310.0"/>
                                 <Button layoutX="334.0" layoutY="390.0" mnemonicParsing="false" onAction="#saveAccountInfo" text="提交"/>
+                                <Button layoutX="442.0" layoutY="390.0" mnemonicParsing="false" onAction="#saveBatchAccountInfo" text="批量导入选择文件"/>
                             </children>
                         </AnchorPane>
                     </content>
