@@ -7,6 +7,7 @@ import com.zhangjingbo.account.service.AccountInfoService;
 import com.zhangjingbo.account.util.DateUtils;
 import com.zhangjingbo.account.util.ExcelUtils;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -16,8 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class AccountInfoServiceImpl extends ServiceImpl implements AccountInfoService {
-    @Resource
+public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,AccountInfo> implements AccountInfoService {
+    @Autowired
     private AccountInfoMapper accountInfoMapper;
 
     @Override

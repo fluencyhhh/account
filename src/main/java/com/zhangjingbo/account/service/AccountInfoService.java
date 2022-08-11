@@ -5,7 +5,7 @@ import com.zhangjingbo.account.entity.AccountInfo;
 
 import java.util.List;
 
-public interface AccountInfoService extends IService {
+public interface AccountInfoService extends IService<AccountInfo> {
 
     int saveAccountInfo(AccountInfo accountInfo);
 
