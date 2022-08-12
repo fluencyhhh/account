@@ -74,5 +74,12 @@
         <if test="accountInfo.balance != null and accountInfo.balance != 0">
             and BALANCE = #{accountInfo.balance}
         </if>
+        <if test="startTime != null  and startTime != ''">
+            and ACCOUNT_TIME >= #{startTime}
+        </if>
+        <if test="endTime != null  and endTime != ''">
+            and ACCOUNT_TIME  &lt;= #{endTime}
+        </if>
+        order by ACCOUNT_TIME asc
     </select>
 </mapper>

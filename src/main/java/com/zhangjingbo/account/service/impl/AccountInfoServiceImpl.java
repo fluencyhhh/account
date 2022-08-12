@@ -6,6 +6,7 @@ import com.zhangjingbo.account.mapper.AccountInfoMapper;
 import com.zhangjingbo.account.service.AccountInfoService;
 import com.zhangjingbo.account.util.DateUtils;
 import com.zhangjingbo.account.util.ExcelUtils;
+import com.zhangjingbo.account.util.UserUtil;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
     @Autowired
     private AccountInfoMapper accountInfoMapper;
 
+    @Autowired
+    private UserUtil userUtil;
+
     @Override
     public int saveAccountInfo(AccountInfo accountInfo) {
         System.out.println(accountInfo);
@@ -35,7 +39,15 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
     @Override
     public List<AccountInfo> queryAccountInfoByParam(AccountInfo accountInfo) {
         System.out.println(accountInfo);
-        return accountInfoMapper.queryAccountInfoByParam(accountInfo);
+        String userType = userUtil.getUserType();
+        if (userType!=null&&"admin".equals(userType)){
+            return accountInfoMapper.queryAccountInfoByParam(accountInfo,"","");
+        }else {
+            String startTime = DateUtils.getCurrYearFirst();
+            String endTime = DateUtils.getCurrYearLast();
+            return accountInfoMapper.queryAccountInfoByParam(accountInfo,startTime,endTime);
+        }
+
     }
 
     @Override
@@ -43,7 +55,7 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
         System.out.println(accountInfo);
         //获取数据存入List<Map>
         //数据来源
-        List<AccountInfo> accountInfoList = accountInfoMapper.queryAccountInfoByParam(accountInfo);
+        List<AccountInfo> accountInfoList = queryAccountInfoByParam(accountInfo);
         //设置路径
         String filePath = "D:\\";
         //文件名

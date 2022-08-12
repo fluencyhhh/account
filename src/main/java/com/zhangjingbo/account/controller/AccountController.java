@@ -155,6 +155,15 @@ public class AccountController {
     @Autowired
     private AccountInfoService accountInfoService;
 
+    @FXML
+    private Label noAccountTime;
+
+    @FXML
+    private Label noAccountVoucher;
+
+    @FXML
+    private Label saveSuccess;
+
     /**
      * 填写保存信息
      */
@@ -162,6 +171,14 @@ public class AccountController {
         AccountInfo accountInfo = new AccountInfo();
         if (!StringUtils.isEmpty(accountTime.getValue())) {
             accountInfo.setAccountTime(DateUtils.getDateBuLocalDate(accountTime.getValue()));
+            if (!DateUtils.ifThisMonth(DateUtils.getDateBuLocalDate(accountTime.getValue()))){
+                noAccountTime.setText("不可操作非本月信息！");
+                noAccountTime.setVisible(true);
+                return;
+            }
+        }else {
+            noAccountTime.setVisible(true);
+            return;
         }
         if (!StringUtils.isEmpty(accountName.getText())) {
             accountInfo.setAccountName(accountName.getText());
@@ -183,6 +200,9 @@ public class AccountController {
         }
         if (!StringUtils.isEmpty(accountVoucher.getText())) {
             accountInfo.setAccountVoucher(accountVoucher.getText());
+        }else {
+            noAccountVoucher.setVisible(true);
+            return;
         }
         if (!StringUtils.isEmpty(accountNumber.getText())) {
             accountInfo.setAccountNumber(accountNumber.getText());
@@ -198,6 +218,7 @@ public class AccountController {
         }
         System.out.println(accountInfo);
         accountInfoService.saveAccountInfo(accountInfo);
+        saveSuccess.setVisible(true);
     }
 
     /**
@@ -210,10 +231,11 @@ public class AccountController {
             File file = fileChooser.showOpenDialog(new Stage());
             InputStream inputStream = new FileInputStream(file);
             List<AccountInfo> accountInfoList = ExcelUtils.importExcel(inputStream);
-            System.out.println("accountInfoList:"+accountInfoList);
+            System.out.println("accountInfoList:"+ accountInfoList);
             for (AccountInfo accountInfo: accountInfoList){
                 accountInfoService.saveAccountInfo(accountInfo);
             }
+            saveSuccess.setVisible(true);
         }catch (Exception e){
             System.out.println("解析失败");
         }
