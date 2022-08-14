@@ -7,6 +7,8 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Button;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -42,7 +44,7 @@ public class AccountInfoVo implements Serializable {
 
     private SimpleLongProperty balance;
 
-    private SimpleObjectProperty<Button> buttonTable;
+    private SimpleObjectProperty<HBox> hBox;
 
     public AccountInfoVo(int accountId, Date accountTime, String accountName, String accountItem, String itemDetail, String itemName, String operator,
             String AccountType, String accountVoucher, String accountNumber, int accountDebit, int accountCredit, long balance) {
@@ -61,7 +63,7 @@ public class AccountInfoVo implements Serializable {
         this.balance = new SimpleLongProperty(balance);
     }
 
-    public AccountInfoVo(AccountInfo accountInfo , Button button) {
+    public AccountInfoVo(AccountInfo accountInfo , HBox hBox) {
         this.accountId = new SimpleIntegerProperty(accountInfo.getAccountId());
         this.accountTime = new SimpleStringProperty(DateUtils.dateToString(accountInfo.getAccountTime()));
         this.accountName = new SimpleStringProperty(accountInfo.getAccountName());
@@ -75,7 +77,7 @@ public class AccountInfoVo implements Serializable {
         this.accountDebit = new SimpleIntegerProperty(accountInfo.getAccountDebit());
         this.accountCredit = new SimpleIntegerProperty(accountInfo.getAccountCredit());
         this.balance = new SimpleLongProperty(accountInfo.getBalance());
-        this.buttonTable = new SimpleObjectProperty<Button>(button);
+        this.hBox = new SimpleObjectProperty<HBox>(hBox);
     }
 
     public int getAccountId() {
@@ -234,17 +236,30 @@ public class AccountInfoVo implements Serializable {
         this.balance.set(balance);
     }
 
-    public Button getButtonTable() {
-        return buttonTable.get();
+    public HBox gethBox() {
+        return hBox.get();
     }
 
-    public SimpleObjectProperty<Button> buttonTableProperty() {
-        return buttonTable;
+    public SimpleObjectProperty<HBox> hBoxProperty() {
+        return hBox;
     }
 
-    public void setButtonTable(Button buttonTable) {
-        this.buttonTable.set(buttonTable);
+    public void sethBox(HBox hBox) {
+        this.hBox.set(hBox);
     }
+
+    //
+//    public Button getButtonTable() {
+//        return buttonTable.get();
+//    }
+//
+//    public SimpleObjectProperty<Button> buttonTableProperty() {
+//        return buttonTable;
+//    }
+//
+//    public void setButtonTable(Button buttonTable) {
+//        this.buttonTable.set(buttonTable);
+//    }
 
     @Override
     public String toString() {

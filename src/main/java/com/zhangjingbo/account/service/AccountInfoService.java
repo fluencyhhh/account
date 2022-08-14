@@ -14,4 +14,6 @@ public interface AccountInfoService extends IService<AccountInfo> {
     List<AccountInfo> queryAccountInfoByParam(AccountInfo accountInfo);
 
     void exportAccountInfoByParam(AccountInfo accountInfo);
+
+    int deleteAccountInfo(AccountInfo o);
 }

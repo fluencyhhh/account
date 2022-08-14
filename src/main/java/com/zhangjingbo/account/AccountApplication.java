@@ -1,5 +1,7 @@
 package com.zhangjingbo.account;
 
+import com.zhangjingbo.account.controller.AccountDialogController;
+import com.zhangjingbo.account.view.AccountDialogView;
 import com.zhangjingbo.account.view.LoginView;
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

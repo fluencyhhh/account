@@ -11,14 +11,14 @@
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="1087.0" prefWidth="1720.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zhangjingbo.account.controller.AccountController">
+<AnchorPane prefHeight="923.0" prefWidth="1724.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zhangjingbo.account.controller.AccountController">
     <children>
         <Accordion layoutX="81.0" layoutY="110.0" />
         <Accordion layoutX="88.0" layoutY="120.0" />
         <ButtonBar layoutX="153.0" layoutY="80.0" prefHeight="40.0" prefWidth="200.0" />
-        <Accordion layoutX="3.0" layoutY="5.0" prefHeight="1087.0" prefWidth="1720.0">
+        <Accordion layoutX="3.0" layoutY="5.0" prefHeight="902.0" prefWidth="1720.0">
             <panes>
-                <TitledPane animated="false" text="查询">
+                <TitledPane animated="false" prefHeight="872.0" prefWidth="1720.0" text="查询">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
@@ -48,9 +48,9 @@
                                 <TextField fx:id="selectBalance" layoutX="555.0" layoutY="198.0" />
                                 <Button layoutX="797.0" layoutY="198.0" mnemonicParsing="false" onAction="#queryAccountInfoByParam" text="查询" />
                                 <Button layoutX="886.0" layoutY="198.0" mnemonicParsing="false" onAction="#exportAccountInfoByParam" text="导出" />
-                                <TableView fx:id="accountInfoTable" layoutX="-4.0" layoutY="229.0" prefHeight="793.0" prefWidth="1720.0">
+                                <TableView fx:id="accountInfoTable" layoutX="-4.0" layoutY="229.0" prefHeight="622.0" prefWidth="1720.0">
                                     <columns>
-                                        <TableColumn fx:id="buttonTable" prefWidth="104.0" text="操作" />
+                                        <TableColumn fx:id="hBox" prefWidth="104.0" text="操作" />
                                         <TableColumn fx:id="accountTimeResult" prefWidth="87.0" text="时间" />
                                         <TableColumn fx:id="accountNameResult" prefWidth="106.0" text="名称" />
                                         <TableColumn fx:id="accountItemResult" prefWidth="108.0" text="名目" />
@@ -67,6 +67,11 @@
                                 </TableView>
                             </children>
                         </AnchorPane>
+                    </content>
+                </TitledPane>
+                <TitledPane animated="false" text="数据导出" visible="false">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                     </content>
                 </TitledPane>
                 <TitledPane animated="false" text="数据录入">
@@ -106,12 +111,9 @@
                         </AnchorPane>
                     </content>
                 </TitledPane>
-                <TitledPane animated="false" text="数据导出" visible="false">
-                    <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                    </content>
-                </TitledPane>
             </panes>
         </Accordion>
     </children>
+    <fx:include source="AccountDialogView.fxml" fx:id="accountDialog"></fx:include>
 </AnchorPane>
+

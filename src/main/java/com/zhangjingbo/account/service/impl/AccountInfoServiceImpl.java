@@ -1,5 +1,7 @@
 package com.zhangjingbo.account.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhangjingbo.account.entity.AccountInfo;
 import com.zhangjingbo.account.mapper.AccountInfoMapper;
@@ -81,5 +83,16 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
             excelData.add(data);
         }
         ExcelUtils.toExport(filePath, fileName, header, excelData);
+    }
+
+    @Override
+    public int deleteAccountInfo(AccountInfo o) {
+        if(o.getAccountId()==0){
+            return 0;
+        }
+        QueryWrapper<AccountInfo> queryWrapper=new QueryWrapper();
+        queryWrapper.eq("account_id",o.getAccountId());
+        accountInfoMapper.delete(queryWrapper);
+        return 1;
     }
 }

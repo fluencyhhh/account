@@ -6,29 +6,22 @@ import com.zhangjingbo.account.util.DateUtils;
 import com.zhangjingbo.account.util.ExcelUtils;
 import com.zhangjingbo.account.vo.AccountInfoVo;
 import de.felixroske.jfxsupport.FXMLController;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import static javafx.collections.FXCollections.observableArrayList;
 
@@ -150,7 +143,7 @@ public class AccountController {
     private TableColumn balanceResult;
 
     @FXML
-    private TableColumn buttonTable;
+    private TableColumn hBox;
 
     @Autowired
     private AccountInfoService accountInfoService;
@@ -297,10 +290,24 @@ public class AccountController {
     }
 
     public List<AccountInfoVo> getAccountInfoVo(List<AccountInfo> accountInfoList) {
-        Button button = new Button("删除");
+
         ObservableList<AccountInfoVo> accountInfoResult;
         List<AccountInfoVo> accountInfoVoList = new ArrayList<>();
-        accountInfoList.forEach(o -> accountInfoVoList.add(new AccountInfoVo(o,button)));
+        accountInfoList.forEach(o -> {
+            Button deleteButton = new Button("删除");
+            Button updateButton = new Button("修改");
+            deleteButton.setOnMouseClicked(event -> {
+                accountInfoService.deleteAccountInfo(o);
+                queryAccountInfoByParam();
+//                System.out.println("删除");
+            });
+            updateButton.setOnMouseClicked(event -> {
+                System.out.println("修改");
+            });
+            HBox hBox=new HBox(10,updateButton,deleteButton);
+            hBox.setAlignment(Pos.BASELINE_CENTER);
+            accountInfoVoList.add(new AccountInfoVo(o, hBox));
+        });
         accountInfoResult = observableArrayList(accountInfoVoList);
         return accountInfoResult;
     }
@@ -337,7 +344,7 @@ public class AccountController {
         accountDebitResult.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, Integer>("accountDebit"));
         accountCreditResult.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, Integer>("accountCredit"));
         balanceResult.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, Integer>("balance"));
-        buttonTable.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, Button>("buttonTable"));
+        hBox.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, HBox>("hBox"));
         accountInfoTable.getItems().setAll(getAccountInfoVo(accountInfoList));
     }
 
