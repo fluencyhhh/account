@@ -114,6 +114,6 @@
             </panes>
         </Accordion>
     </children>
-    <fx:include source="AccountDialogView.fxml" fx:id="accountDialog"></fx:include>
+<!--    <fx:include source="AccountDialogView.fxml" fx:id="accountDialog"></fx:include>-->
 </AnchorPane>
 

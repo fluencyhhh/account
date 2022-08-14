@@ -4,22 +4,29 @@ import com.zhangjingbo.account.entity.AccountInfo;
 import com.zhangjingbo.account.service.AccountInfoService;
 import com.zhangjingbo.account.util.DateUtils;
 import com.zhangjingbo.account.util.ExcelUtils;
+import com.zhangjingbo.account.util.UserUtil;
 import com.zhangjingbo.account.vo.AccountInfoVo;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,6 +164,9 @@ public class AccountController {
     @FXML
     private Label saveSuccess;
 
+    @Autowired
+    private UserUtil userUtil;
+
     /**
      * 填写保存信息
      */
@@ -164,12 +174,12 @@ public class AccountController {
         AccountInfo accountInfo = new AccountInfo();
         if (!StringUtils.isEmpty(accountTime.getValue())) {
             accountInfo.setAccountTime(DateUtils.getDateBuLocalDate(accountTime.getValue()));
-            if (!DateUtils.ifThisMonth(DateUtils.getDateBuLocalDate(accountTime.getValue()))){
+            if (!DateUtils.ifThisMonth(DateUtils.getDateBuLocalDate(accountTime.getValue()))) {
                 noAccountTime.setText("不可操作非本月信息！");
                 noAccountTime.setVisible(true);
                 return;
             }
-        }else {
+        } else {
             noAccountTime.setVisible(true);
             return;
         }
@@ -193,7 +203,7 @@ public class AccountController {
         }
         if (!StringUtils.isEmpty(accountVoucher.getText())) {
             accountInfo.setAccountVoucher(accountVoucher.getText());
-        }else {
+        } else {
             noAccountVoucher.setVisible(true);
             return;
         }
@@ -201,13 +211,13 @@ public class AccountController {
             accountInfo.setAccountNumber(accountNumber.getText());
         }
         if (!StringUtils.isEmpty(accountDebit.getText())) {
-            accountInfo.setAccountDebit(Integer.valueOf(accountDebit.getText()));
+            accountInfo.setAccountDebit(new BigDecimal(accountDebit.getText()));
         }
         if (!StringUtils.isEmpty(accountCredit.getText())) {
-            accountInfo.setAccountCredit(Integer.valueOf(accountCredit.getText()));
+            accountInfo.setAccountCredit(new BigDecimal(accountCredit.getText()));
         }
         if (!StringUtils.isEmpty(balance.getText())) {
-            accountInfo.setBalance(Integer.valueOf(balance.getText()));
+            accountInfo.setBalance(new BigDecimal(balance.getText()));
         }
         System.out.println(accountInfo);
         accountInfoService.saveAccountInfo(accountInfo);
@@ -224,12 +234,12 @@ public class AccountController {
             File file = fileChooser.showOpenDialog(new Stage());
             InputStream inputStream = new FileInputStream(file);
             List<AccountInfo> accountInfoList = ExcelUtils.importExcel(inputStream);
-            System.out.println("accountInfoList:"+ accountInfoList);
-            for (AccountInfo accountInfo: accountInfoList){
+            System.out.println("accountInfoList:" + accountInfoList);
+            for (AccountInfo accountInfo : accountInfoList) {
                 accountInfoService.saveAccountInfo(accountInfo);
             }
             saveSuccess.setVisible(true);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("解析失败");
         }
 
@@ -276,13 +286,13 @@ public class AccountController {
             accountInfo.setAccountNumber(selectAccountNumber.getText());
         }
         if (!StringUtils.isEmpty(selectAccountDebit.getText())) {
-            accountInfo.setAccountDebit(Integer.valueOf(selectAccountDebit.getText()));
+            accountInfo.setAccountDebit(new BigDecimal(selectAccountDebit.getText()));
         }
         if (!StringUtils.isEmpty(selectAccountCredit.getText())) {
-            accountInfo.setAccountCredit(Integer.valueOf(selectAccountCredit.getText()));
+            accountInfo.setAccountCredit(new BigDecimal(selectAccountCredit.getText()));
         }
         if (!StringUtils.isEmpty(selectBalance.getText())) {
-            accountInfo.setBalance(Integer.valueOf(selectBalance.getText()));
+            accountInfo.setBalance(new BigDecimal(selectBalance.getText()));
         }
         List<AccountInfo> accountInfoList = accountInfoService.queryAccountInfoByParam(accountInfo);
         System.out.println(accountInfoList);
@@ -302,14 +312,50 @@ public class AccountController {
 //                System.out.println("删除");
             });
             updateButton.setOnMouseClicked(event -> {
-                System.out.println("修改");
+                openDialog(o);
+                queryAccountInfoByParam();
             });
-            HBox hBox=new HBox(10,updateButton,deleteButton);
+            HBox hBox = new HBox(10, updateButton, deleteButton);
             hBox.setAlignment(Pos.BASELINE_CENTER);
             accountInfoVoList.add(new AccountInfoVo(o, hBox));
         });
         accountInfoResult = observableArrayList(accountInfoVoList);
         return accountInfoResult;
+    }
+
+    private void openDialog(AccountInfo o) {
+        try {
+            System.out.println(userUtil.getUserType());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AccountDialogView.fxml"));
+            Parent parent = null;
+            parent = loader.load();
+            AccountDialogController target = loader.getController();
+            setValue(o, target);
+            Scene scene = new Scene(parent);
+            Stage newstage = new Stage();
+            newstage.setScene(scene);
+            newstage.setResizable(false);
+            newstage.initModality(Modality.APPLICATION_MODAL);
+            newstage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setValue(AccountInfo o, AccountDialogController target) {
+        target.accountTime.setValue(DateUtils.dateToLocalDate(o.getAccountTime()));
+        target.accountTime.setDisable(true);
+        target.accountName.setValue(o.getAccountName());
+        target.accountItem.setValue(o.getAccountItem());
+        target.itemName.setText(o.getItemName());
+        target.operator.setText(o.getOperator());
+        target.accountType.setValue(o.getAccountType());
+        target.accountNumber.setText(o.getAccountNumber());
+        target.accountVoucher.setText(o.getAccountVoucher());
+        target.accountVoucher.setDisable(true);
+        target.itemDetail.setText(o.getItemDetail());
+        target.accountCredit.setText(o.getAccountCredit().toString());
+        target.accountDebit.setText(o.getAccountDebit().toString());
     }
 
     public void initializeAccountInfoTable(List<AccountInfo> accountInfoList) {
@@ -381,13 +427,13 @@ public class AccountController {
             accountInfo.setAccountNumber(selectAccountNumber.getText());
         }
         if (!StringUtils.isEmpty(selectAccountDebit.getText())) {
-            accountInfo.setAccountDebit(Integer.valueOf(selectAccountDebit.getText()));
+            accountInfo.setAccountDebit(new BigDecimal(selectAccountDebit.getText()));
         }
         if (!StringUtils.isEmpty(selectAccountCredit.getText())) {
-            accountInfo.setAccountCredit(Integer.valueOf(selectAccountCredit.getText()));
+            accountInfo.setAccountCredit(new BigDecimal(selectAccountCredit.getText()));
         }
         if (!StringUtils.isEmpty(selectBalance.getText())) {
-            accountInfo.setBalance(Integer.valueOf(selectBalance.getText()));
+            accountInfo.setBalance(new BigDecimal(selectBalance.getText()));
         }
         accountInfoService.exportAccountInfoByParam(accountInfo);
     }

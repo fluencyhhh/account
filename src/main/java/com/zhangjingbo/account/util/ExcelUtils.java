@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -505,13 +506,13 @@ public class ExcelUtils {
                         accountInfo.setAccountNumber(accountNumber);
                         cell = row.getCell(9);
                         Integer accountDebit = Integer.valueOf(cell.getStringCellValue());
-                        accountInfo.setAccountDebit(accountDebit);
+                        accountInfo.setAccountDebit(new BigDecimal(accountDebit));
                         cell = row.getCell(10);
                         Integer accountCredit = Integer.valueOf(cell.getStringCellValue());
-                        accountInfo.setAccountCredit(accountCredit);
+                        accountInfo.setAccountCredit(new BigDecimal(accountCredit));
                         cell = row.getCell(11);
                         Integer balance = Integer.valueOf(cell.getStringCellValue());
-                        accountInfo.setBalance(balance);
+                        accountInfo.setBalance(new BigDecimal(balance));
 //                        for (int k = 0; k < cells; k++) {
 //                            //5.4.1.6.1、获取每一个单元格的数据
 //                            Cell cell = row.getCell(k);

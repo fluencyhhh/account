@@ -3,6 +3,7 @@ package com.zhangjingbo.account.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -19,7 +20,7 @@ public class AccountInfo {
     private String AccountType;
     private String accountVoucher;
     private String accountNumber;
-    private int accountDebit;
-    private int accountCredit;
-    private long balance;
+    private BigDecimal accountDebit;
+    private BigDecimal accountCredit;
+    private BigDecimal balance;
 }

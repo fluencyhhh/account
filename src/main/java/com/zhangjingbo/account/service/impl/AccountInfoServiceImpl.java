@@ -95,4 +95,18 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
         accountInfoMapper.delete(queryWrapper);
         return 1;
     }
+
+    @Override
+    public int editAccuntInfo(AccountInfo accountInfo) {
+        QueryWrapper<AccountInfo> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("to_char(ACCOUNT_TIME,'yyyy-MM-dd')",DateUtils.dateToString(accountInfo.getAccountTime()));
+        queryWrapper.eq("account_voucher",accountInfo.getAccountVoucher());
+        List<AccountInfo> accountInfoList=accountInfoMapper.selectList(queryWrapper);
+        if(accountInfoList==null || accountInfoList.isEmpty()){
+            accountInfoMapper.insert(accountInfo);
+        }else {
+            accountInfoMapper.update(accountInfo,queryWrapper);
+        }
+        return 1;
+    }
 }

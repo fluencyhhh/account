@@ -16,6 +16,10 @@ public class DateUtils {
         Date date = Date.from(instant);
         return date;
     }
+
+    public static LocalDate dateToLocalDate(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
     public static String dateToString(Date date){
         String strDate = "";
         try {

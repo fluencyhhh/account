@@ -81,7 +81,7 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.rowIndex="2">
                <children>
-                  <Label text="银行凭证">
+                  <Label text="账单号码">
                      <padding>
                         <Insets left="-13.0" />
                      </padding>
@@ -91,7 +91,7 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <children>
-                  <Label text="账单号码">
+                  <Label text="银行凭证">
                      <padding>
                         <Insets left="-13.0" />
                      </padding>
@@ -99,7 +99,7 @@
                   <TextField fx:id="accountNumber" prefWidth="190.0" />
                </children>
             </HBox>
-            <HBox fx:id="accountDebitBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="15.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <HBox fx:id="accountCreditBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="15.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <children>
                   <Label text="支出" />
                   <TextField fx:id="accountCredit" prefWidth="190.0" />
@@ -123,7 +123,6 @@
             </HBox>
          </children>
       </GridPane>
-      <Button layoutX="670.0" layoutY="277.0" mnemonicParsing="false" style="-fx-background-color: #3be855;" text="保  存" textFill="WHITE" />
-      <Button layoutX="726.0" layoutY="277.0" mnemonicParsing="false" style="-fx-background-color: #f65e5e;" text="关  闭" textFill="#fffefe" />
+      <Button layoutX="724.0" layoutY="277.0" mnemonicParsing="false" onAction="#editAccount" style="-fx-background-color: #3be855;" text="保  存" textFill="WHITE" />
    </children>
 </AnchorPane>

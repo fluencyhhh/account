@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -38,16 +39,16 @@ public class AccountInfoVo implements Serializable {
 
     private SimpleStringProperty accountNumber;
 
-    private SimpleIntegerProperty accountDebit;
+    private SimpleStringProperty accountDebit;
 
-    private SimpleIntegerProperty accountCredit;
+    private SimpleStringProperty accountCredit;
 
-    private SimpleLongProperty balance;
+    private SimpleStringProperty balance;
 
     private SimpleObjectProperty<HBox> hBox;
 
     public AccountInfoVo(int accountId, Date accountTime, String accountName, String accountItem, String itemDetail, String itemName, String operator,
-            String AccountType, String accountVoucher, String accountNumber, int accountDebit, int accountCredit, long balance) {
+                         String AccountType, String accountVoucher, String accountNumber, BigDecimal accountDebit, BigDecimal accountCredit, BigDecimal balance) {
         this.accountId = new SimpleIntegerProperty(accountId);
         this.accountTime = new SimpleStringProperty(DateUtils.dateToString(accountTime));
         this.accountName = new SimpleStringProperty(accountName);
@@ -58,9 +59,9 @@ public class AccountInfoVo implements Serializable {
         this.accountType = new SimpleStringProperty(AccountType);
         this.accountVoucher = new SimpleStringProperty(accountVoucher);
         this.accountNumber = new SimpleStringProperty(accountNumber);
-        this.accountDebit = new SimpleIntegerProperty(accountDebit);
-        this.accountCredit = new SimpleIntegerProperty(accountCredit);
-        this.balance = new SimpleLongProperty(balance);
+        this.accountDebit = new SimpleStringProperty(accountDebit.toString());
+        this.accountCredit = new SimpleStringProperty(accountCredit.toString());
+        this.balance = new SimpleStringProperty(balance.toString());
     }
 
     public AccountInfoVo(AccountInfo accountInfo , HBox hBox) {
@@ -74,9 +75,9 @@ public class AccountInfoVo implements Serializable {
         this.accountType = new SimpleStringProperty(accountInfo.getAccountType());
         this.accountVoucher = new SimpleStringProperty(accountInfo.getAccountVoucher());
         this.accountNumber = new SimpleStringProperty(accountInfo.getAccountNumber());
-        this.accountDebit = new SimpleIntegerProperty(accountInfo.getAccountDebit());
-        this.accountCredit = new SimpleIntegerProperty(accountInfo.getAccountCredit());
-        this.balance = new SimpleLongProperty(accountInfo.getBalance());
+        this.accountDebit = new SimpleStringProperty(accountInfo.getAccountDebit().toString());
+        this.accountCredit = new SimpleStringProperty(accountInfo.getAccountCredit().toString());
+        this.balance = new SimpleStringProperty(accountInfo.getBalance().toString());
         this.hBox = new SimpleObjectProperty<HBox>(hBox);
     }
 
@@ -200,42 +201,6 @@ public class AccountInfoVo implements Serializable {
         this.accountNumber.set(accountNumber);
     }
 
-    public int getAccountDebit() {
-        return accountDebit.get();
-    }
-
-    public SimpleIntegerProperty accountDebitProperty() {
-        return accountDebit;
-    }
-
-    public void setAccountDebit(int accountDebit) {
-        this.accountDebit.set(accountDebit);
-    }
-
-    public int getAccountCredit() {
-        return accountCredit.get();
-    }
-
-    public SimpleIntegerProperty accountCreditProperty() {
-        return accountCredit;
-    }
-
-    public void setAccountCredit(int accountCredit) {
-        this.accountCredit.set(accountCredit);
-    }
-
-    public long getBalance() {
-        return balance.get();
-    }
-
-    public SimpleLongProperty balanceProperty() {
-        return balance;
-    }
-
-    public void setBalance(long balance) {
-        this.balance.set(balance);
-    }
-
     public HBox gethBox() {
         return hBox.get();
     }
@@ -246,6 +211,42 @@ public class AccountInfoVo implements Serializable {
 
     public void sethBox(HBox hBox) {
         this.hBox.set(hBox);
+    }
+
+    public String getAccountDebit() {
+        return accountDebit.get();
+    }
+
+    public SimpleStringProperty accountDebitProperty() {
+        return accountDebit;
+    }
+
+    public void setAccountDebit(String accountDebit) {
+        this.accountDebit.set(accountDebit);
+    }
+
+    public String getAccountCredit() {
+        return accountCredit.get();
+    }
+
+    public SimpleStringProperty accountCreditProperty() {
+        return accountCredit;
+    }
+
+    public void setAccountCredit(String accountCredit) {
+        this.accountCredit.set(accountCredit);
+    }
+
+    public String getBalance() {
+        return balance.get();
+    }
+
+    public SimpleStringProperty balanceProperty() {
+        return balance;
+    }
+
+    public void setBalance(String balance) {
+        this.balance.set(balance);
     }
 
     //
