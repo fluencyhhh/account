@@ -29,7 +29,7 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
 
     @Override
     public int saveAccountInfo(AccountInfo accountInfo) {
-        System.out.println(accountInfo);
+        System.out.println("-------------"+accountInfo);
         return accountInfoMapper.saveAccountInfo(accountInfo);
     }
 

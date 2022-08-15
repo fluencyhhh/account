@@ -478,7 +478,12 @@ public class ExcelUtils {
                         int index = 0;
                         //5.4.1.6、遍历每一个有效的单元格数据
                         Cell cell = row.getCell(0);
-                        Date accountTime = DateUtils.stringToDate(cell.getStringCellValue()) ;
+                        Date accountTime = null;
+                        try {
+                            accountTime = (cell.getDateCellValue()) ;
+                        }catch (Exception e){
+                            accountTime = DateUtils.stringToDate(cell.getStringCellValue()) ;
+                        }
                         accountInfo.setAccountTime(accountTime);
                         cell = row.getCell(1);
                         String accountName = cell.getStringCellValue();

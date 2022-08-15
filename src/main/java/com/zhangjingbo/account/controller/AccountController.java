@@ -35,41 +35,7 @@ import static javafx.collections.FXCollections.observableArrayList;
 @FXMLController
 public class AccountController {
 
-    @FXML
-    private DatePicker accountTime;
 
-    @FXML
-    private TextField accountName;
-
-    @FXML
-    private TextField accountItem;
-
-    @FXML
-    private TextField itemDetail;
-
-    @FXML
-    private TextField itemName;
-
-    @FXML
-    private TextField operator;
-
-    @FXML
-    private TextField accountType;
-
-    @FXML
-    private TextField accountVoucher;
-
-    @FXML
-    private TextField accountNumber;
-
-    @FXML
-    private TextField accountDebit;
-
-    @FXML
-    private TextField accountCredit;
-
-    @FXML
-    private TextField balance;
 
     @FXML
     private DatePicker selectAccountTime;
@@ -155,95 +121,8 @@ public class AccountController {
     @Autowired
     private AccountInfoService accountInfoService;
 
-    @FXML
-    private Label noAccountTime;
-
-    @FXML
-    private Label noAccountVoucher;
-
-    @FXML
-    private Label saveSuccess;
-
     @Autowired
     private UserUtil userUtil;
-
-    /**
-     * 填写保存信息
-     */
-    public void saveAccountInfo() {
-        AccountInfo accountInfo = new AccountInfo();
-        if (!StringUtils.isEmpty(accountTime.getValue())) {
-            accountInfo.setAccountTime(DateUtils.getDateBuLocalDate(accountTime.getValue()));
-            if (!DateUtils.ifThisMonth(DateUtils.getDateBuLocalDate(accountTime.getValue()))) {
-                noAccountTime.setText("不可操作非本月信息！");
-                noAccountTime.setVisible(true);
-                return;
-            }
-        } else {
-            noAccountTime.setVisible(true);
-            return;
-        }
-        if (!StringUtils.isEmpty(accountName.getText())) {
-            accountInfo.setAccountName(accountName.getText());
-        }
-        if (!StringUtils.isEmpty(accountItem.getText())) {
-            accountInfo.setAccountItem(accountItem.getText());
-        }
-        if (!StringUtils.isEmpty(itemDetail.getText())) {
-            accountInfo.setItemDetail(itemDetail.getText());
-        }
-        if (!StringUtils.isEmpty(itemName.getText())) {
-            accountInfo.setItemName(itemName.getText());
-        }
-        if (!StringUtils.isEmpty(operator.getText())) {
-            accountInfo.setOperator(operator.getText());
-        }
-        if (!StringUtils.isEmpty(accountType.getText())) {
-            accountInfo.setAccountType(accountType.getText());
-        }
-        if (!StringUtils.isEmpty(accountVoucher.getText())) {
-            accountInfo.setAccountVoucher(accountVoucher.getText());
-        } else {
-            noAccountVoucher.setVisible(true);
-            return;
-        }
-        if (!StringUtils.isEmpty(accountNumber.getText())) {
-            accountInfo.setAccountNumber(accountNumber.getText());
-        }
-        if (!StringUtils.isEmpty(accountDebit.getText())) {
-            accountInfo.setAccountDebit(new BigDecimal(accountDebit.getText()));
-        }
-        if (!StringUtils.isEmpty(accountCredit.getText())) {
-            accountInfo.setAccountCredit(new BigDecimal(accountCredit.getText()));
-        }
-        if (!StringUtils.isEmpty(balance.getText())) {
-            accountInfo.setBalance(new BigDecimal(balance.getText()));
-        }
-        System.out.println(accountInfo);
-        accountInfoService.saveAccountInfo(accountInfo);
-        saveSuccess.setVisible(true);
-    }
-
-    /**
-     * 批量导入信息
-     */
-    @FXML
-    public void saveBatchAccountInfo() {
-        try {
-            FileChooser fileChooser = new FileChooser();
-            File file = fileChooser.showOpenDialog(new Stage());
-            InputStream inputStream = new FileInputStream(file);
-            List<AccountInfo> accountInfoList = ExcelUtils.importExcel(inputStream);
-            System.out.println("accountInfoList:" + accountInfoList);
-            for (AccountInfo accountInfo : accountInfoList) {
-                accountInfoService.saveAccountInfo(accountInfo);
-            }
-            saveSuccess.setVisible(true);
-        } catch (Exception e) {
-            System.out.println("解析失败");
-        }
-
-    }
 
     /**
      * 查询全部信息
@@ -436,6 +315,23 @@ public class AccountController {
             accountInfo.setBalance(new BigDecimal(selectBalance.getText()));
         }
         accountInfoService.exportAccountInfoByParam(accountInfo);
+    }
+
+    public void openAccountAdd() {
+        try {
+            System.out.println(userUtil.getUserType());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/AccountAddView.fxml"));
+            Parent parent = null;
+            parent = loader.load();
+            Scene scene = new Scene(parent);
+            Stage newstage = new Stage();
+            newstage.setScene(scene);
+            newstage.setResizable(false);
+            newstage.initModality(Modality.APPLICATION_MODAL);
+            newstage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
