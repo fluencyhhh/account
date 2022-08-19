@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhangjingbo.account.mapper.BalanceMapper">
+
+    <select id="queryCurrentBalance" resultType="java.math.BigDecimal">
+        select balance from BALANCE order by operateTime desc
+    </select>
+
+</mapper>

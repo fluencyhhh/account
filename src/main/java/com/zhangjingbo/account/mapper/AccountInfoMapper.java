@@ -16,4 +16,5 @@ public interface AccountInfoMapper extends BaseMapper<AccountInfo> {
     List<AccountInfo> queryAllAccountInfo();
 
     List<AccountInfo> queryAccountInfoByParam(@Param("accountInfo") AccountInfo accountInfo,@Param("startTime") String startTime,@Param("endTime") String endTime);
+
 }
