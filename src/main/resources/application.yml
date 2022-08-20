@@ -5,7 +5,6 @@ spring:
     name: account
   datasource:
     driver-class-name: org.h2.Driver
-#    url: jdbc:h2:file:E://dbconfig/db;MODE=MYSQL
     url: jdbc:h2:file:./dbconfig/db;MODE=MYSQL
     username: root
     password: 123456
@@ -21,6 +20,7 @@ spring:
       enabled: true
       settings:
         web-allow-others: true
+
 
 
 mybatis-plus:

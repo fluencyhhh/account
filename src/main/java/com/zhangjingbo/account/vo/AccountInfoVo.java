@@ -3,11 +3,8 @@ package com.zhangjingbo.account.vo;
 import com.zhangjingbo.account.entity.AccountInfo;
 import com.zhangjingbo.account.util.DateUtils;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.control.Button;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import lombok.Data;
 
@@ -19,7 +16,7 @@ import java.util.Date;
 public class AccountInfoVo implements Serializable {
     private static final long serialVersionUID = 8659512506680957154L;
 
-    private SimpleIntegerProperty accountId;
+    private SimpleStringProperty accountId;
 
     private SimpleStringProperty accountTime;
 
@@ -47,9 +44,9 @@ public class AccountInfoVo implements Serializable {
 
     private SimpleObjectProperty<HBox> hBox;
 
-    public AccountInfoVo(int accountId, Date accountTime, String accountName, String accountItem, String itemDetail, String itemName, String operator,
+    public AccountInfoVo(String accountId, Date accountTime, String accountName, String accountItem, String itemDetail, String itemName, String operator,
                          String AccountType, String accountVoucher, String accountNumber, BigDecimal accountDebit, BigDecimal accountCredit, BigDecimal balance) {
-        this.accountId = new SimpleIntegerProperty(accountId);
+        this.accountId = new SimpleStringProperty(accountId);
         this.accountTime = new SimpleStringProperty(DateUtils.dateToString(accountTime));
         this.accountName = new SimpleStringProperty(accountName);
         this.accountItem = new SimpleStringProperty(accountItem);
@@ -65,7 +62,7 @@ public class AccountInfoVo implements Serializable {
     }
 
     public AccountInfoVo(AccountInfo accountInfo , HBox hBox) {
-        this.accountId = new SimpleIntegerProperty(accountInfo.getAccountId());
+        this.accountId = new SimpleStringProperty(accountInfo.getAccountId());
         this.accountTime = new SimpleStringProperty(DateUtils.dateToString(accountInfo.getAccountTime()));
         this.accountName = new SimpleStringProperty(accountInfo.getAccountName());
         this.accountItem = new SimpleStringProperty(accountInfo.getAccountItem());
@@ -81,16 +78,16 @@ public class AccountInfoVo implements Serializable {
         this.hBox = new SimpleObjectProperty<HBox>(hBox);
     }
 
-    public int getAccountId() {
+    public String getAccountId() {
         return accountId.get();
     }
 
-    public SimpleIntegerProperty accountIdProperty() {
+    public SimpleStringProperty accountIdProperty() {
         return accountId;
     }
 
-    public void setAccountId(int accountID) {
-        this.accountId.set(accountID);
+    public void setAccountId(String accountId) {
+        this.accountId.set(accountId);
     }
 
     public String getAccountTime() {

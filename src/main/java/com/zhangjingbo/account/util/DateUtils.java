@@ -1,10 +1,13 @@
 package com.zhangjingbo.account.util;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -15,6 +18,12 @@ public class DateUtils {
         Instant instant = localDate.atStartOfDay().atZone(zone).toInstant();
         Date date = Date.from(instant);
         return date;
+    }
+
+    public static String localDateToString(LocalDate localDate){
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String dateStr = localDate.format(df);
+        return dateStr;
     }
 
     public static LocalDate dateToLocalDate(Date date) {
@@ -46,6 +55,12 @@ public class DateUtils {
     public static String getCurrentTime(){
         Date date = new Date();
         SimpleDateFormat dateFormat= new SimpleDateFormat("yyyyMMddHHmmss");
+        String dateTime = dateFormat.format(date);
+        return dateTime;
+    }
+    public static String getDate(){
+        Date date = new Date();
+        SimpleDateFormat dateFormat= new SimpleDateFormat("yyyy-MM-dd");
         String dateTime = dateFormat.format(date);
         return dateTime;
     }
@@ -123,6 +138,11 @@ public class DateUtils {
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH)+1;
         return (currentYear==year)&&(currentMonth==month);
+    }
+
+    public static LocalDate timestampTOLocalDate(Timestamp timestamp){
+        LocalDate localDate = Instant.ofEpochMilli(timestamp.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+        return localDate;
     }
 
     public static void main(String[] args) {

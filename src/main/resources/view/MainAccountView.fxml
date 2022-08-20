@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Accordion?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="923.0" prefWidth="1724.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zhangjingbo.account.controller.AccountController">
+<AnchorPane prefHeight="878.0" prefWidth="1724.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zhangjingbo.account.controller.AccountController">
     <children>
-        <Accordion layoutX="81.0" layoutY="110.0" />
-        <Accordion layoutX="88.0" layoutY="120.0" />
-        <ButtonBar layoutX="153.0" layoutY="80.0" prefHeight="40.0" prefWidth="200.0" />
 <!--        <Accordion layoutX="3.0" layoutY="5.0" prefHeight="902.0" prefWidth="1720.0">-->
 <!--            <panes>-->
 <!--                <TitledPane animated="false" prefHeight="872.0" prefWidth="1720.0" text="查询" />-->
@@ -62,35 +64,9 @@
 <!--                </TitledPane>-->
 <!--            </panes>-->
 <!--        </Accordion>-->
-      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="923.0" prefWidth="1726.0">
+      <AnchorPane layoutX="-6.0" layoutY="-2.0" minHeight="0.0" minWidth="0.0" prefHeight="880.0" prefWidth="1724.0">
          <children>
-            <Label layoutX="104.0" layoutY="22.0" text="时间" />
-            <DatePicker fx:id="selectAccountTime" layoutX="209.0" layoutY="18.0" />
-            <Label layoutX="104.0" layoutY="58.0" text="名称" />
-            <TextField fx:id="selectAccountName" layoutX="209.0" layoutY="54.0" />
-            <Label layoutX="104.0" layoutY="97.0" text="名目" />
-            <TextField fx:id="selectAccountItem" layoutX="209.0" layoutY="93.0" />
-            <Label layoutX="76.0" layoutY="133.0" text="人物-明细-单位" />
-            <TextField fx:id="selectItemDetail" layoutX="209.0" layoutY="129.0" />
-            <Label layoutX="94.0" layoutY="171.0" text="项目名称" />
-            <TextField fx:id="selectItemName" layoutX="209.0" layoutY="167.0" />
-            <Label layoutX="100.0" layoutY="202.0" text="经办人" />
-            <TextField fx:id="selectOperator" layoutX="209.0" layoutY="198.0" />
-            <Label layoutX="486.0" layoutY="22.0" text="类型" />
-            <TextField fx:id="selectAccountType" layoutX="555.0" layoutY="18.0" />
-            <Label layoutX="486.0" layoutY="58.0" text="凭证" />
-            <TextField fx:id="selectAccountVoucher" layoutX="555.0" layoutY="54.0" />
-            <Label layoutX="486.0" layoutY="97.0" text="号码" />
-            <TextField fx:id="selectAccountNumber" layoutX="555.0" layoutY="93.0" />
-            <Label layoutX="480.0" layoutY="133.0" text="借金额" />
-            <TextField fx:id="selectAccountDebit" layoutX="555.0" layoutY="129.0" />
-            <Label layoutX="480.0" layoutY="171.0" text="贷金额" />
-            <TextField fx:id="selectAccountCredit" layoutX="555.0" layoutY="167.0" />
-            <Label layoutX="486.0" layoutY="202.0" text="余额" />
-            <TextField fx:id="selectBalance" layoutX="555.0" layoutY="198.0" />
-            <Button layoutX="797.0" layoutY="198.0" mnemonicParsing="false" onAction="#queryAccountInfoByParam" text="查询" />
-            <Button layoutX="886.0" layoutY="198.0" mnemonicParsing="false" onAction="#exportAccountInfoByParam" text="导出" />
-            <TableView fx:id="accountInfoTable" layoutX="3.0" layoutY="229.0" prefHeight="693.0" prefWidth="1720.0">
+            <TableView fx:id="accountInfoTable" layoutX="3.0" layoutY="174.0" prefHeight="595.0" prefWidth="1724.0">
                <columns>
                   <TableColumn fx:id="hBox" prefWidth="104.0" text="操作" />
                   <TableColumn fx:id="accountTimeResult" prefWidth="87.0" text="时间" />
@@ -102,12 +78,139 @@
                   <TableColumn fx:id="accountTypeResult" prefWidth="90.0" text="类型" />
                   <TableColumn fx:id="accountVoucherResult" prefWidth="165.0" text="凭证" />
                   <TableColumn fx:id="accountNumberResult" prefWidth="198.0" text="号码" />
-                  <TableColumn fx:id="accountDebitResult" minWidth="6.0" text="借金额" />
-                  <TableColumn fx:id="accountCreditResult" prefWidth="81.0" text="贷金额" />
+                  <TableColumn fx:id="accountDebitResult" minWidth="6.0" text="收入" />
+                  <TableColumn fx:id="accountCreditResult" prefWidth="81.0" text="支出" />
                   <TableColumn fx:id="balanceResult" prefWidth="132.0" text="余额" />
                </columns>
             </TableView>
-            <Button layoutX="973.0" layoutY="198.0" mnemonicParsing="false" onAction="#openAccountAdd" text="数据录入" />
+            <GridPane layoutX="4.0" prefHeight="170.0" prefWidth="1724.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                     <children>
+                        <Label text="时间从">
+                           <padding>
+                              <Insets left="-10.0" />
+                           </padding></Label>
+                        <DatePicker fx:id="selectAccountTimeStart" prefWidth="190.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                     <children>
+                        <Label text="到">
+                           <padding>
+                              <Insets left="13.0" />
+                           </padding>
+                        </Label>
+                        <DatePicker fx:id="selectAccountTimeEnd" prefWidth="190.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="2">
+                     <children>
+                        <Label text="名称" />
+                        <ChoiceBox fx:id="selectAccountName" prefWidth="190.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="3">
+                     <children>
+                        <Label text="名目" />
+                        <ChoiceBox fx:id="selectAccountItem" prefWidth="190.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <children>
+                        <Label text="经办人">
+                           <padding>
+                              <Insets left="-10.0" />
+                           </padding></Label>
+                        <TextField fx:id="selectOperator" prefWidth="190.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <children>
+                        <Label text="项目名称">
+                           <padding>
+                              <Insets left="-23.0" />
+                           </padding>
+                        </Label>
+                        <TextField fx:id="selectItemName" prefWidth="190.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.rowIndex="1">
+                     <children>
+                        <Label text="人物-明细-单位">
+                           <padding>
+                              <Insets left="-62.0" />
+                           </padding>
+                        </Label>
+                        <TextField fx:id="selectItemDetail" prefWidth="190.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                     <children>
+                        <Label text="凭证" />
+                        <TextField fx:id="selectAccountVoucher" prefWidth="190.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.rowIndex="2">
+                     <children>
+                        <Label text="号码" />
+                        <TextField fx:id="selectAccountNumber" prefWidth="190.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <children>
+                        <Label text="收入" />
+                        <TextField fx:id="selectAccountDebit" prefWidth="190.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                     <children>
+                        <Label text="支出" />
+                        <TextField fx:id="selectAccountCredit" prefWidth="190.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                     <children>
+                        <Label text="类型" />
+                        <ChoiceBox fx:id="selectAccountType" prefWidth="190.0" />
+                     </children></HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.rowIndex="3">
+                     <children>
+                        <Label text="时间段">
+                           <padding>
+                              <Insets left="-10.0" />
+                           </padding></Label>
+                        <ChoiceBox fx:id="selectTimeBetween" prefWidth="190.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <children>
+                        <Button mnemonicParsing="false" fx:id="queryButton" text="查询" />
+                        <Button mnemonicParsing="false" onAction="#exportAccountInfoByParam" text="导出" />
+                        <Button mnemonicParsing="false" onAction="#openAccountAdd" text="新增" />
+                     </children>
+                  </HBox>
+               </children>
+            </GridPane>
+            <Pagination fx:id="pagination" layoutY="174.0" pageCount="5" prefHeight="653.0" prefWidth="1724.0">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets></Pagination>
          </children>
       </AnchorPane>
     </children>

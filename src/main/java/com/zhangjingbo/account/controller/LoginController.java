@@ -64,9 +64,9 @@ public class LoginController implements Initializable {
     private void jumpTest() {
         AccountApplication.showView(MainAccountView.class);
         Stage stage=AccountApplication.getStage();
-        stage.setWidth(1720.0);
-        stage.setHeight(1006);
-        stage.setResizable(true);
+        stage.setWidth(1724.0);
+        stage.setHeight(878);
+        stage.setResizable(false);
         stage.centerOnScreen();
         System.out.println(userUtil.getUserType());
     }

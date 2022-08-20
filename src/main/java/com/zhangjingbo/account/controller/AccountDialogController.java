@@ -1,23 +1,18 @@
 package com.zhangjingbo.account.controller;
 
-import com.zhangjingbo.account.AccountApplication;
 import com.zhangjingbo.account.entity.AccountInfo;
 import com.zhangjingbo.account.service.AccountInfoService;
 import com.zhangjingbo.account.util.BeanUtils;
 import com.zhangjingbo.account.util.DateUtils;
 import com.zhangjingbo.account.util.UserUtil;
 import de.felixroske.jfxsupport.FXMLController;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -153,7 +148,7 @@ public class AccountDialogController implements Initializable {
 
     public void editAccount(ActionEvent actionEvent) {
         AccountInfo accountInfo = new AccountInfo();
-        if (!org.springframework.util.StringUtils.isEmpty(accountTime.getValue())) {
+        if (accountTime.getValue()==null) {
             accountInfo.setAccountTime(DateUtils.getDateBuLocalDate(accountTime.getValue()));
         }
         if (StringUtils.isNoneBlank((String) (accountName.getValue()))) {

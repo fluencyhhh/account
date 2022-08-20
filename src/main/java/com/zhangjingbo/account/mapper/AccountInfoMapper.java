@@ -2,6 +2,7 @@ package com.zhangjingbo.account.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhangjingbo.account.entity.AccountInfo;
+import com.zhangjingbo.account.form.AccountInfoForm;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,6 @@ public interface AccountInfoMapper extends BaseMapper<AccountInfo> {
 
     List<AccountInfo> queryAllAccountInfo();
 
-    List<AccountInfo> queryAccountInfoByParam(@Param("accountInfo") AccountInfo accountInfo,@Param("startTime") String startTime,@Param("endTime") String endTime);
+    List<AccountInfo> queryAccountInfoByParam(@Param("accountInfo") AccountInfoForm accountInfo, @Param("startTime") String startTime, @Param("endTime") String endTime);
 
 }

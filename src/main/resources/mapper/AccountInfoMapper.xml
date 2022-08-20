@@ -24,7 +24,7 @@
              #{accountInfo.itemDetail},
              #{accountInfo.itemName},
              #{accountInfo.operator},
-             #{accountInfo.AccountType},
+             #{accountInfo.accountType},
              #{accountInfo.accountVoucher},
              #{accountInfo.accountNumber},
              #{accountInfo.accountDebit},
@@ -36,7 +36,7 @@
         select * from MAIN_ACCOUNT order by accountId
     </select>
 
-    <select id="queryAccountInfoByParam" parameterType="com.zhangjingbo.account.entity.AccountInfo" resultType="com.zhangjingbo.account.entity.AccountInfo">
+    <select id="queryAccountInfoByParam" parameterType="com.zhangjingbo.account.form.AccountInfoForm" resultType="com.zhangjingbo.account.entity.AccountInfo">
         select * from MAIN_ACCOUNT where 1=1
         <if test="accountInfo.accountTime != null">
             and ACCOUNT_TIME = #{accountInfo.accountTime}
@@ -56,8 +56,8 @@
         <if test="accountInfo.operator != null and accountInfo.operator != ''">
             and OPERATOR = #{accountInfo.operator}
         </if>
-        <if test="accountInfo.AccountType != null and accountInfo.AccountType != ''">
-            and ACCOUNT_TYPE = #{accountInfo.AccountType}
+        <if test="accountInfo.accountType != null and accountInfo.accountType != ''">
+            and ACCOUNT_TYPE = #{accountInfo.accountType}
         </if>
         <if test="accountInfo.accountVoucher != null and accountInfo.accountVoucher != ''">
             and ACCOUNT_VOUCHER = #{accountInfo.accountVoucher}

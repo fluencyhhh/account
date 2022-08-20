@@ -1,50 +1,59 @@
 package com.zhangjingbo.account.controller;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.zhangjingbo.account.entity.AccountInfo;
+import com.zhangjingbo.account.form.AccountInfoForm;
 import com.zhangjingbo.account.service.AccountInfoService;
+import com.zhangjingbo.account.util.BeanUtils;
 import com.zhangjingbo.account.util.DateUtils;
-import com.zhangjingbo.account.util.ExcelUtils;
 import com.zhangjingbo.account.util.UserUtil;
 import com.zhangjingbo.account.vo.AccountInfoVo;
 import de.felixroske.jfxsupport.FXMLController;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import static javafx.collections.FXCollections.observableArrayList;
 
 @FXMLController
-public class AccountController {
-
-
+public class AccountController implements Initializable {
 
     @FXML
-    private DatePicker selectAccountTime;
+    private DatePicker selectAccountTimeStart;
 
     @FXML
-    private TextField selectAccountName;
+    private DatePicker selectAccountTimeEnd;
 
     @FXML
-    private TextField selectAccountItem;
+    private ChoiceBox selectAccountName;
+
+    @FXML
+    private ChoiceBox selectAccountItem;
 
     @FXML
     private TextField selectItemDetail;
@@ -54,9 +63,6 @@ public class AccountController {
 
     @FXML
     private TextField selectOperator;
-
-    @FXML
-    private TextField selectAccountType;
 
     @FXML
     private TextField selectAccountVoucher;
@@ -71,7 +77,10 @@ public class AccountController {
     private TextField selectAccountCredit;
 
     @FXML
-    private TextField selectBalance;
+    private ChoiceBox selectTimeBetween;
+
+    @FXML
+    private ChoiceBox selectAccountType;
 
     @FXML
     private TableView<AccountInfoVo> accountInfoTable;
@@ -118,11 +127,50 @@ public class AccountController {
     @FXML
     private TableColumn hBox;
 
+    @FXML
+    private Pagination pagination;
+
+    @FXML
+    private Button queryButton;
+
     @Autowired
     private AccountInfoService accountInfoService;
 
     @Autowired
     private UserUtil userUtil;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        queryButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                queryAccountInfoByParam(1);
+                pagination.setPageCount(1);
+            }
+        });
+
+        pagination.setPageFactory(new Callback<Integer, Node>() {
+            @Override
+            public Node call(Integer param) {
+                queryAccountInfoByParam(param+1);
+                return accountInfoTable;
+            }
+        });
+        pagination.setMaxPageIndicatorCount(5);
+        selectAccountName.getItems().addAll("管理费", "管理费返还", "人工", "收入", "经转", "其他");
+        selectAccountName.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                setAccountItem(newValue.intValue());
+            }
+        });
+        userUtil= BeanUtils.getBean(UserUtil.class);
+        if("admin".equals(userUtil.getUserType())){
+            selectAccountType.getItems().addAll("现金","支付宝","微信","渤海");
+        }else {
+            selectAccountType.getItems().addAll("北京银行","现金");
+        }selectTimeBetween.getItems().addAll("本月","本季度","本年度");
+    }
 
     /**
      * 查询全部信息
@@ -135,47 +183,70 @@ public class AccountController {
     /**
      * 按条件查询信息
      */
-    public void queryAccountInfoByParam() {
-        AccountInfo accountInfo = new AccountInfo();
-        if (!StringUtils.isEmpty(selectAccountTime.getValue())) {
-            accountInfo.setAccountTime(DateUtils.getDateBuLocalDate(selectAccountTime.getValue()));
+    public void queryAccountInfoByParam(Integer pageNo) {
+        AccountInfoForm accountInfoForm = new AccountInfoForm();
+        if (selectAccountTimeStart.getValue()!=null) {
+            accountInfoForm.setAccountTimeStart(DateUtils.localDateToString(selectAccountTimeStart.getValue()));
         }
-        if (!StringUtils.isEmpty(selectAccountName.getText())) {
-            accountInfo.setAccountName(selectAccountName.getText());
+        if (selectAccountTimeEnd.getValue()!=null) {
+            accountInfoForm.setAccountTimeEnd(DateUtils.localDateToString(selectAccountTimeEnd.getValue()));
         }
-        if (!StringUtils.isEmpty(selectAccountItem.getText())) {
-            accountInfo.setAccountItem(selectAccountItem.getText());
+        if (StringUtils.isNotBlank((String)(selectTimeBetween.getValue()))) {
+            accountInfoForm.setAccountTimeBetween((String)(selectTimeBetween.getValue()));
         }
-        if (!StringUtils.isEmpty(selectItemDetail.getText())) {
-            accountInfo.setItemDetail(selectItemDetail.getText());
+        if(StringUtils.isNotBlank((String)(selectTimeBetween.getValue()))&&(null==userUtil.getUserType()||!"admin".equals(userUtil.getUserType()))){
+            if(StringUtils.isNotBlank(accountInfoForm.getAccountTimeStart())&&DateUtils.getCurrYearFirst().compareTo(accountInfoForm.getAccountTimeStart())>0){
+                Alert alert=new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("提示");
+                alert.setHeaderText(null);
+                alert.setContentText("非管理员只能查询当年账目");
+                alert.showAndWait();
+                return;
+            }
+            if(StringUtils.isNotBlank(accountInfoForm.getAccountTimeEnd())&&DateUtils.getCurrYearLast().compareTo(accountInfoForm.getAccountTimeEnd())>0){
+                Alert alert=new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("提示");
+                alert.setHeaderText(null);
+                alert.setContentText("非管理员只能查询当年账目");
+                alert.showAndWait();
+                return;
+            }
         }
-        if (!StringUtils.isEmpty(selectItemName.getText())) {
-            accountInfo.setItemName(selectItemName.getText());
+        if (StringUtils.isNotBlank((String)(selectAccountName.getValue()))) {
+            accountInfoForm.setAccountName((String)(selectAccountName.getValue()));
         }
-        if (!StringUtils.isEmpty(selectOperator.getText())) {
-            accountInfo.setOperator(selectOperator.getText());
+
+        if (StringUtils.isNotBlank((String)(selectAccountItem.getValue()))) {
+            accountInfoForm.setAccountItem((String)(selectAccountItem.getValue()));
         }
-        if (!StringUtils.isEmpty(selectAccountType.getText())) {
-            accountInfo.setAccountType(selectAccountType.getText());
+        if (StringUtils.isNotBlank(selectItemDetail.getText())) {
+            accountInfoForm.setItemDetail(selectItemDetail.getText());
         }
-        if (!StringUtils.isEmpty(selectAccountVoucher.getText())) {
-            accountInfo.setAccountVoucher(selectAccountVoucher.getText());
+        if (StringUtils.isNotBlank(selectItemName.getText())) {
+            accountInfoForm.setItemName(selectItemName.getText());
         }
-        if (!StringUtils.isEmpty(selectAccountNumber.getText())) {
-            accountInfo.setAccountNumber(selectAccountNumber.getText());
+        if (StringUtils.isNotBlank(selectOperator.getText())) {
+            accountInfoForm.setOperator(selectOperator.getText());
         }
-        if (!StringUtils.isEmpty(selectAccountDebit.getText())) {
-            accountInfo.setAccountDebit(new BigDecimal(selectAccountDebit.getText()));
+        if (StringUtils.isNotBlank((String)(selectAccountType.getValue()))) {
+            accountInfoForm.setAccountType((String)(selectAccountType.getValue()));
         }
-        if (!StringUtils.isEmpty(selectAccountCredit.getText())) {
-            accountInfo.setAccountCredit(new BigDecimal(selectAccountCredit.getText()));
+        if (StringUtils.isNotBlank(selectAccountVoucher.getText())) {
+            accountInfoForm.setAccountVoucher(selectAccountVoucher.getText());
         }
-        if (!StringUtils.isEmpty(selectBalance.getText())) {
-            accountInfo.setBalance(new BigDecimal(selectBalance.getText()));
+        if (StringUtils.isNotBlank(selectAccountNumber.getText())) {
+            accountInfoForm.setAccountNumber(selectAccountNumber.getText());
         }
-        List<AccountInfo> accountInfoList = accountInfoService.queryAccountInfoByParam(accountInfo);
-        System.out.println(accountInfoList);
+        if (StringUtils.isNotBlank(selectAccountDebit.getText())) {
+            accountInfoForm.setAccountDebit(selectAccountDebit.getText());
+        }
+        if (StringUtils.isNotBlank(selectAccountCredit.getText())) {
+            accountInfoForm.setAccountCredit(selectAccountCredit.getText());
+        }
+        Page<AccountInfo> page=accountInfoService.queryAccountInfoByParam(accountInfoForm,pageNo);
+        List<AccountInfo> accountInfoList = page.getResult();
         initializeAccountInfoTable(accountInfoList);
+        pagination.setPageCount(page.getPages());
     }
 
     public List<AccountInfoVo> getAccountInfoVo(List<AccountInfo> accountInfoList) {
@@ -187,12 +258,12 @@ public class AccountController {
             Button updateButton = new Button("修改");
             deleteButton.setOnMouseClicked(event -> {
                 accountInfoService.deleteAccountInfo(o);
-                queryAccountInfoByParam();
+                queryAccountInfoByParam(pagination.getCurrentPageIndex()+1);
 //                System.out.println("删除");
             });
             updateButton.setOnMouseClicked(event -> {
                 openDialog(o);
-                queryAccountInfoByParam();
+                queryAccountInfoByParam(pagination.getCurrentPageIndex()+1);
             });
             HBox hBox = new HBox(10, updateButton, deleteButton);
             hBox.setAlignment(Pos.BASELINE_CENTER);
@@ -235,6 +306,7 @@ public class AccountController {
         target.itemDetail.setText(o.getItemDetail());
         target.accountCredit.setText(o.getAccountCredit().toString());
         target.accountDebit.setText(o.getAccountDebit().toString());
+
     }
 
     public void initializeAccountInfoTable(List<AccountInfo> accountInfoList) {
@@ -271,50 +343,54 @@ public class AccountController {
         balanceResult.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, Integer>("balance"));
         hBox.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, HBox>("hBox"));
         accountInfoTable.getItems().setAll(getAccountInfoVo(accountInfoList));
+
     }
 
     /**
      * 按条件导出信息
      */
     public void exportAccountInfoByParam() {
-        AccountInfo accountInfo = new AccountInfo();
-        if (!StringUtils.isEmpty(selectAccountTime.getValue())) {
-            accountInfo.setAccountTime(DateUtils.getDateBuLocalDate(selectAccountTime.getValue()));
+        AccountInfoForm accountInfoForm = new AccountInfoForm();
+        if (selectAccountTimeStart.getValue()!=null) {
+            accountInfoForm.setAccountTimeStart(DateUtils.localDateToString(selectAccountTimeStart.getValue()));
         }
-        if (!StringUtils.isEmpty(selectAccountName.getText())) {
-            accountInfo.setAccountName(selectAccountName.getText());
+        if (selectAccountTimeEnd.getValue()!=null) {
+            accountInfoForm.setAccountTimeEnd(DateUtils.localDateToString(selectAccountTimeEnd.getValue()));
         }
-        if (!StringUtils.isEmpty(selectAccountItem.getText())) {
-            accountInfo.setAccountItem(selectAccountItem.getText());
+        if (StringUtils.isNotBlank((String)(selectAccountName.getValue()))) {
+            accountInfoForm.setAccountName((String)(selectAccountName.getValue()));
         }
-        if (!StringUtils.isEmpty(selectItemDetail.getText())) {
-            accountInfo.setItemDetail(selectItemDetail.getText());
+        if (StringUtils.isNotBlank((String)(selectTimeBetween.getValue()))) {
+            accountInfoForm.setAccountName((String)(selectTimeBetween.getValue()));
         }
-        if (!StringUtils.isEmpty(selectItemName.getText())) {
-            accountInfo.setItemName(selectItemName.getText());
+        if (StringUtils.isNotBlank((String)(selectAccountItem.getValue()))) {
+            accountInfoForm.setAccountItem((String)(selectAccountItem.getValue()));
         }
-        if (!StringUtils.isEmpty(selectOperator.getText())) {
-            accountInfo.setOperator(selectOperator.getText());
+        if (StringUtils.isNotBlank(selectItemDetail.getText())) {
+            accountInfoForm.setItemDetail(selectItemDetail.getText());
         }
-        if (!StringUtils.isEmpty(selectAccountType.getText())) {
-            accountInfo.setAccountType(selectAccountType.getText());
+        if (StringUtils.isNotBlank(selectItemName.getText())) {
+            accountInfoForm.setItemName(selectItemName.getText());
         }
-        if (!StringUtils.isEmpty(selectAccountVoucher.getText())) {
-            accountInfo.setAccountVoucher(selectAccountVoucher.getText());
+        if (StringUtils.isNotBlank(selectOperator.getText())) {
+            accountInfoForm.setOperator(selectOperator.getText());
         }
-        if (!StringUtils.isEmpty(selectAccountNumber.getText())) {
-            accountInfo.setAccountNumber(selectAccountNumber.getText());
+        if (StringUtils.isNotBlank((String)(selectAccountType.getValue()))) {
+            accountInfoForm.setAccountType((String)(selectAccountType.getValue()));
         }
-        if (!StringUtils.isEmpty(selectAccountDebit.getText())) {
-            accountInfo.setAccountDebit(new BigDecimal(selectAccountDebit.getText()));
+        if (StringUtils.isNotBlank(selectAccountVoucher.getText())) {
+            accountInfoForm.setAccountVoucher(selectAccountVoucher.getText());
         }
-        if (!StringUtils.isEmpty(selectAccountCredit.getText())) {
-            accountInfo.setAccountCredit(new BigDecimal(selectAccountCredit.getText()));
+        if (StringUtils.isNotBlank(selectAccountNumber.getText())) {
+            accountInfoForm.setAccountNumber(selectAccountNumber.getText());
         }
-        if (!StringUtils.isEmpty(selectBalance.getText())) {
-            accountInfo.setBalance(new BigDecimal(selectBalance.getText()));
+        if (StringUtils.isNotBlank(selectAccountDebit.getText())) {
+            accountInfoForm.setAccountDebit(selectAccountDebit.getText());
         }
-        accountInfoService.exportAccountInfoByParam(accountInfo);
+        if (StringUtils.isNotBlank(selectAccountCredit.getText())) {
+            accountInfoForm.setAccountCredit(selectAccountCredit.getText());
+        }
+        accountInfoService.exportAccountInfoByParam(accountInfoForm);
     }
 
     public void openAccountAdd() {
@@ -334,4 +410,28 @@ public class AccountController {
         }
     }
 
+    private void setAccountItem(int number) {
+        selectAccountItem.getItems().clear();
+        switch (number) {
+            case 0:
+                selectAccountItem.getItems().addAll("办公耗材", "办公设备", "办公软任", "办公维修", "办公招聘", "办公培训", "公务招投标", "公务标书", "公务印装", "公务快递", "公务造价师", "外勤交通", "外勒差旅", "外勒驻场", "配置餐费", "配置福利", "配置礼品", "基础场地", "基础车辆", "咨询费", "财务费", "税金", "杂项");
+                break;
+            case 1:
+                selectAccountItem.getItems().addAll("办公耗材", "办公设备", "办公软件", "办公维修", "办公招聘", "办公培训", "公务招投标", "公务快递", "公务标书", "公务印装", "公务造价师", "外動交通", "外勒差旅", "外勒驻场", "配置餐费", "配置福利", "配置礼品", "基础场地", "基础车辆", "咨询费", "财务费", "税金", "杂项");
+                break;
+            case 2:
+                selectAccountItem.getItems().addAll("薪水","保险","奖金","福利");
+                break;
+            case 3:
+                selectAccountItem.getItems().addAll("咨询费","利息","杂项");
+                break;
+            case 4:
+                selectAccountItem.getItems().addAll("转入","转出","提现","投保金","投保金返还","汽油费","汽油费返还");
+                break;
+            case 5:
+                selectAccountItem.getItems().addAll("收入","支出");
+                break;
+            default:selectAccountItem.getItems().addAll();
+        }
+    }
 }

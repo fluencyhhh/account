@@ -3,15 +3,20 @@ package com.zhangjingbo.account.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.zhangjingbo.account.entity.AccountInfo;
 import com.zhangjingbo.account.entity.Balance;
+import com.zhangjingbo.account.form.AccountInfoForm;
 import com.zhangjingbo.account.mapper.AccountInfoMapper;
 import com.zhangjingbo.account.mapper.BalanceMapper;
 import com.zhangjingbo.account.service.AccountInfoService;
 import com.zhangjingbo.account.util.DateUtils;
 import com.zhangjingbo.account.util.ExcelUtils;
+import com.zhangjingbo.account.util.UUIDUtil;
 import com.zhangjingbo.account.util.UserUtil;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -40,7 +45,11 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
         System.out.println("-------------"+accountInfo);
         //操作余额
         if (balanceMapper.selectCount(new QueryWrapper<>())==0){
-            balanceMapper.insert(new Balance(0,new Date(),new BigDecimal(0),0));
+            Balance balance=new Balance();
+            balance.setId(UUIDUtil.get32UUID());
+            balance.setBalance(new BigDecimal(0));
+            balance.setOperateTime(new Date());
+            balanceMapper.insert(balance);
         }
         BigDecimal currentBalance = queryCurrentBalance();
         System.out.println(currentBalance);
@@ -81,25 +90,83 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
     }
 
     @Override
-    public List<AccountInfo> queryAccountInfoByParam(AccountInfo accountInfo) {
-        System.out.println(accountInfo);
+    public Page<AccountInfo> queryAccountInfoByParam(AccountInfoForm accountInfoForm, Integer pageNo) {
         String userType = userUtil.getUserType();
-        if (userType!=null&&"admin".equals(userType)){
-            return accountInfoMapper.queryAccountInfoByParam(accountInfo,"","");
-        }else {
-            String startTime = DateUtils.getCurrYearFirst();
-            String endTime = DateUtils.getCurrYearLast();
-            return accountInfoMapper.queryAccountInfoByParam(accountInfo,startTime,endTime);
+        QueryWrapper<AccountInfo> queryWrapper = new QueryWrapper<>();
+        if (StringUtils.isNotBlank(accountInfoForm.getAccountTimeStart())) {
+            queryWrapper.ge("to_char(account_time,'yyyy-MM-dd')", accountInfoForm.getAccountTimeStart());
+        } else {
+            if ((userType == null || !"admin".equals(userType))) {
+                queryWrapper.ge("to_char(account_time,'yyyy-MM-dd')", DateUtils.getCurrYearFirst());
+            }
         }
-
+        if (StringUtils.isNotBlank(accountInfoForm.getAccountTimeEnd())) {
+            queryWrapper.le("to_char(account_time,'yyyy-MM-dd')", accountInfoForm.getAccountTimeEnd());
+        } else {
+            if (userType == null || !"admin".equals(userType)) {
+                queryWrapper.le("to_char(account_time,'yyyy-MM-dd')", DateUtils.getCurrYearLast());
+            }
+        }
+        if (StringUtils.isNotBlank(accountInfoForm.getAccountTimeBetween())) {
+            if ("本月".equals(accountInfoForm.getAccountTimeBetween())) {
+                queryWrapper.eq("to_char(account_time,'yyyy-MM')",DateUtils.getDate().substring(0,7));
+            } else if ("本季度".equals(accountInfoForm.getAccountTimeBetween())) {
+                String month=DateUtils.getCurrentTime().substring(4,6);
+                if("01".equals(month)||"02".equals(month)||"03".equals(month)){
+                    queryWrapper.ge("to_char(account_time,'yyyy-MM')", DateUtils.getDate().substring(0,5)+"01");
+                    queryWrapper.le("to_char(account_time,'yyyy-MM')", DateUtils.getDate().substring(0,5)+"03");
+                }else if("04".equals(month)||"05".equals(month)||"06".equals(month)){
+                    queryWrapper.ge("to_char(account_time,'yyyy-MM')", DateUtils.getDate().substring(0,5)+"04");
+                    queryWrapper.le("to_char(account_time,'yyyy-MM')", DateUtils.getDate().substring(0,5)+"06");
+                }else if("07".equals(month)||"08".equals(month)||"09".equals(month)){
+                    queryWrapper.ge("to_char(account_time,'yyyy-MM')", DateUtils.getDate().substring(0,5)+"07");
+                    queryWrapper.le("to_char(account_time,'yyyy-MM')", DateUtils.getDate().substring(0,5)+"09");
+                }else if("07".equals(month)||"10".equals(month)||"12".equals(month)){
+                    queryWrapper.ge("to_char(account_time,'yyyy-MM')", DateUtils.getDate().substring(0,5)+"10");
+                    queryWrapper.le("to_char(account_time,'yyyy-MM')", DateUtils.getDate().substring(0,5)+"12");
+                }
+            } else if ("本年".equals(accountInfoForm.getAccountTimeBetween())) {
+                queryWrapper.eq("to_char(account_time,'yyyy')",DateUtils.getDate().substring(0,4));
+            }
+        }
+        if (StringUtils.isNotBlank(accountInfoForm.getAccountItem())) {
+            queryWrapper.eq("account_item", accountInfoForm.getAccountItem());
+        }
+        if (StringUtils.isNotBlank(accountInfoForm.getAccountName())) {
+            queryWrapper.eq("account_name", accountInfoForm.getAccountName());
+        }
+        if (StringUtils.isNotBlank(accountInfoForm.getItemDetail())) {
+            queryWrapper.like("item_detail", accountInfoForm.getItemDetail());
+        }
+        if (StringUtils.isNotBlank(accountInfoForm.getItemName())) {
+            queryWrapper.like("item_name", accountInfoForm.getItemName());
+        }
+        if (StringUtils.isNotBlank(accountInfoForm.getOperator())) {
+            queryWrapper.like("operator", accountInfoForm.getOperator());
+        }
+        if (StringUtils.isNotBlank(accountInfoForm.getAccountVoucher())) {
+            queryWrapper.like("account_voucher", accountInfoForm.getAccountVoucher());
+        }
+        if (StringUtils.isNotBlank(accountInfoForm.getAccountNumber())) {
+            queryWrapper.like("account_number", accountInfoForm.getAccountNumber());
+        }
+        if (StringUtils.isNotBlank(accountInfoForm.getAccountDebit())) {
+            queryWrapper.eq("account_debit", accountInfoForm.getAccountDebit());
+        }
+        if (StringUtils.isNotBlank(accountInfoForm.getAccountCredit())) {
+            queryWrapper.eq("account_credit", accountInfoForm.getAccountCredit());
+        }
+        PageHelper.startPage(pageNo, 20);
+        List<AccountInfo> accountInfoList = accountInfoMapper.selectList(queryWrapper);
+        Page<AccountInfo> page = (Page<AccountInfo>) accountInfoList;
+        return page;
     }
 
     @Override
-    public void exportAccountInfoByParam(AccountInfo accountInfo) {
-        System.out.println(accountInfo);
+    public void exportAccountInfoByParam(AccountInfoForm accountInfoForm) {
         //获取数据存入List<Map>
         //数据来源
-        List<AccountInfo> accountInfoList = queryAccountInfoByParam(accountInfo);
+        List<AccountInfo> accountInfoList = queryAccountInfoByParam(accountInfoForm, 0).getResult();
         //设置路径
         String filePath = "D:\\";
         //文件名
@@ -129,7 +196,7 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
 
     @Override
     public int deleteAccountInfo(AccountInfo o) {
-        if(o.getAccountId()==0){
+        if (StringUtils.isBlank(o.getAccountId())) {
             return 0;
         }
         QueryWrapper<AccountInfo> queryWrapper=new QueryWrapper();

@@ -222,7 +222,7 @@ public class AccountAddController implements Initializable {
         if (accountInfoService == null) {
             accountInfoService=BeanUtils.getBean(AccountInfoService.class);
         }
-        accountInfoService.saveAccountInfo(accountInfo);
+        accountInfoService.editAccuntInfo(accountInfo);
         noAccountTime.setVisible(false);
         noAccountVoucher.setVisible(false);
         saveSuccess.setVisible(true);
@@ -243,7 +243,7 @@ public class AccountAddController implements Initializable {
                 accountInfoService=BeanUtils.getBean(AccountInfoService.class);
             }
             for (AccountInfo accountInfo : accountInfoList) {
-                accountInfoService.saveAccountInfo(accountInfo);
+                accountInfoService.editAccuntInfo(accountInfo);
             }
             noAccountTime.setVisible(false);
             noAccountVoucher.setVisible(false);
