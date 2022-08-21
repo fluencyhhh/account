@@ -434,4 +434,20 @@ public class AccountController implements Initializable {
             default:selectAccountItem.getItems().addAll();
         }
     }
+
+    public void cleanQuery(ActionEvent actionEvent) {
+        selectAccountTimeStart.setValue(null);
+        selectAccountTimeEnd.setValue(null);
+        selectAccountName.setValue(null);
+        selectAccountItem.setValue(null);
+        selectItemDetail.setText(null);
+        selectItemName.setText(null);
+        selectAccountItem.setValue(null);
+        selectOperator.setText(null);
+        selectAccountVoucher.setText(null);
+        selectAccountNumber.setText(null);
+        selectAccountCredit.setText(null);
+        selectAccountDebit.setText(null);
+        selectTimeBetween.setValue(null);
+    }
 }
