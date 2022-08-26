@@ -111,6 +111,12 @@ public class AccountInfo implements Serializable {
     /**
      * 操作时间
      */
-    @TableField(value = "OPEART_TIME")
+    @TableField(value = "OPERAT_TIME")
     private Date opeartTime;
+
+    /**
+     * 操作时间
+     */
+    @TableField(value = "OPERATOR_TYPE")
+    private String opeartorType;
 }

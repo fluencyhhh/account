@@ -198,12 +198,30 @@
                         <ChoiceBox fx:id="selectTimeBetween" prefWidth="190.0" />
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                  <HBox fx:id="otherQueryButton" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <children>
                         <Button fx:id="queryButton" mnemonicParsing="false" text="查询" />
                         <Button mnemonicParsing="false" onAction="#exportAccountInfoByParam" text="导出" />
                         <Button mnemonicParsing="false" onAction="#openAccountAdd" text="新增" />
                         <Button mnemonicParsing="false" onAction="#cleanQuery" text="清空" />
+                     </children>
+                  </HBox>
+                  <HBox fx:id="adminQueryButton" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="30.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                     <children>
+                        <Button fx:id="queryButton1" mnemonicParsing="false" text="查询" />
+                        <Button mnemonicParsing="false" onAction="#exportAccountInfoByParam" text="导出" />
+                        <Button mnemonicParsing="false" onAction="#openAccountAdd" text="新增" />
+                        <Button mnemonicParsing="false" onAction="#cleanQuery" text="清空" />
+                     </children>
+                  </HBox>
+                  <HBox fx:id="operatorType" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <children>
+                        <Label text="操作人类别">
+                           <padding>
+                              <Insets left="-35.0" />
+                           </padding>
+                        </Label>
+                        <ChoiceBox fx:id="selectOperatorType" prefWidth="190.0" />
                      </children>
                   </HBox>
                </children>

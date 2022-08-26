@@ -38,4 +38,8 @@ public class AccountInfoForm {
     private String accountCredit;
 
     private String balance;
+
+    private Date operatTime;
+
+    private String operatorType;
 }

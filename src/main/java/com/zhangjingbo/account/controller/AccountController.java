@@ -133,6 +133,18 @@ public class AccountController implements Initializable {
     @FXML
     private Button queryButton;
 
+    @FXML
+    private HBox otherQueryButton;
+
+    @FXML
+    private HBox adminQueryButton;
+
+    @FXML
+    private HBox operatorType;
+
+    @FXML
+    private ChoiceBox selectOperatorType;
+
     @Autowired
     private AccountInfoService accountInfoService;
 
@@ -164,12 +176,34 @@ public class AccountController implements Initializable {
                 setAccountItem(newValue.intValue());
             }
         });
-        userUtil= BeanUtils.getBean(UserUtil.class);
+        if(userUtil==null){
+            userUtil= BeanUtils.getBean(UserUtil.class);
+        }
         if("admin".equals(userUtil.getUserType())){
-            selectAccountType.getItems().addAll("现金","支付宝","微信","渤海");
+            selectAccountType.getItems().addAll("现金","支付宝","微信","渤海银行");
         }else {
             selectAccountType.getItems().addAll("北京银行","现金");
-        }selectTimeBetween.getItems().addAll("本月","本季度","本年度");
+        }
+        selectTimeBetween.getItems().addAll("本月","本季度","本年度");
+        if ("admin".equals(userUtil.getUserType())) {
+            adminQueryButton.setVisible(true);
+            otherQueryButton.setVisible(false);
+            selectOperatorType.getItems().addAll("单位","个人");
+        }else {
+            adminQueryButton.setVisible(false);
+            otherQueryButton.setVisible(true);
+        }
+        selectOperatorType.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                selectAccountType.getItems().clear();
+                if (newValue.intValue() == 0) {
+                    selectAccountType.getItems().addAll("北京银行","现金");
+                }else if(newValue.intValue()==1){
+                    selectAccountType.getItems().addAll("现金","支付宝","微信","渤海银行");
+                }
+            }
+        });
     }
 
     /**
