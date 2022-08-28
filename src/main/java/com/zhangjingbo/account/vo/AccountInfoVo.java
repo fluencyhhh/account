@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.layout.HBox;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -72,9 +73,9 @@ public class AccountInfoVo implements Serializable {
         this.accountType = new SimpleStringProperty(accountInfo.getAccountType());
         this.accountVoucher = new SimpleStringProperty(accountInfo.getAccountVoucher());
         this.accountNumber = new SimpleStringProperty(accountInfo.getAccountNumber());
-        this.accountDebit = new SimpleStringProperty(accountInfo.getAccountDebit().toString());
-        this.accountCredit = new SimpleStringProperty(accountInfo.getAccountCredit().toString());
-        this.balance = new SimpleStringProperty(accountInfo.getBalance().toString());
+        this.accountDebit = new SimpleStringProperty(accountInfo.getAccountDebit()!=null?accountInfo.getAccountDebit().toString():null);
+        this.accountCredit = new SimpleStringProperty(accountInfo.getAccountCredit()!=null?accountInfo.getAccountCredit().toString():null);
+        this.balance = new SimpleStringProperty(accountInfo.getBalance()!=null?accountInfo.getBalance().toString():null);
         this.hBox = new SimpleObjectProperty<HBox>(hBox);
     }
 

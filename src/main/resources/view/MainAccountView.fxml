@@ -69,18 +69,18 @@
             <TableView fx:id="accountInfoTable" layoutX="3.0" layoutY="174.0" prefHeight="595.0" prefWidth="1724.0">
                <columns>
                   <TableColumn fx:id="hBox" prefWidth="104.0" text="操作" />
-                  <TableColumn fx:id="accountTimeResult" prefWidth="87.0" text="时间" />
-                  <TableColumn fx:id="accountNameResult" prefWidth="106.0" text="名称" />
-                  <TableColumn fx:id="accountItemResult" prefWidth="108.0" text="名目" />
-                  <TableColumn fx:id="itemDetailResult" prefWidth="257.0" text="人物-明细-单位" />
-                  <TableColumn fx:id="itemNameResult" prefWidth="226.0" text="项目名称" />
-                  <TableColumn fx:id="operatorResult" prefWidth="85.0" text="经办人" />
-                  <TableColumn fx:id="accountTypeResult" prefWidth="90.0" text="类型" />
-                  <TableColumn fx:id="accountVoucherResult" prefWidth="165.0" text="凭证" />
-                  <TableColumn fx:id="accountNumberResult" prefWidth="198.0" text="号码" />
-                  <TableColumn fx:id="accountDebitResult" minWidth="6.0" text="收入" />
-                  <TableColumn fx:id="accountCreditResult" prefWidth="81.0" text="支出" />
-                  <TableColumn fx:id="balanceResult" prefWidth="132.0" text="余额" />
+                  <TableColumn fx:id="accountTimeResult" prefWidth="87.0" style="-fx-alignment: CENTER;" text="时间" />
+                  <TableColumn fx:id="accountNameResult" prefWidth="106.0" style="-fx-alignment: CENTER;" text="名称" />
+                  <TableColumn fx:id="accountItemResult" prefWidth="108.0" style="-fx-alignment: CENTER;" text="名目" />
+                  <TableColumn fx:id="itemDetailResult" prefWidth="257.0" style="-fx-alignment: CENTER;" text="人物-明细-单位" />
+                  <TableColumn fx:id="itemNameResult" prefWidth="226.0" style="-fx-alignment: CENTER;" text="项目名称" />
+                  <TableColumn fx:id="operatorResult" prefWidth="85.0" style="-fx-alignment: CENTER;" text="经办人" />
+                  <TableColumn fx:id="accountTypeResult" prefWidth="90.0" text="类型" style="-fx-alignment: CENTER;" />
+                  <TableColumn fx:id="accountVoucherResult" prefWidth="165.0" text="凭证" style="-fx-alignment: CENTER;" />
+                  <TableColumn fx:id="accountNumberResult" prefWidth="198.0" text="号码" style="-fx-alignment: CENTER;" />
+                  <TableColumn fx:id="accountDebitResult" minWidth="6.0" text="收入" style="-fx-alignment: CENTER;" />
+                  <TableColumn fx:id="accountCreditResult" prefWidth="81.0" text="支出" style="-fx-alignment: CENTER;" />
+                  <TableColumn fx:id="balanceResult" prefWidth="132.0" text="余额" style="-fx-alignment: CENTER;" />
                </columns>
             </TableView>
             <GridPane layoutX="4.0" prefHeight="170.0" prefWidth="1724.0">

@@ -134,6 +134,9 @@ public class AccountController implements Initializable {
     private Button queryButton;
 
     @FXML
+    private Button queryButton1;
+
+    @FXML
     private HBox otherQueryButton;
 
     @FXML
@@ -154,6 +157,13 @@ public class AccountController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         queryButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                queryAccountInfoByParam(1);
+                pagination.setPageCount(1);
+            }
+        });
+        queryButton1.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 queryAccountInfoByParam(1);
@@ -488,5 +498,6 @@ public class AccountController implements Initializable {
         selectAccountCredit.setText(null);
         selectAccountDebit.setText(null);
         selectTimeBetween.setValue(null);
+        selectOperatorType.setValue(null);
     }
 }
