@@ -76,6 +76,12 @@ public class AccountAddController implements Initializable {
     public HBox accountCreditBox;
 
     @FXML
+    public HBox operatoerTypeHbox;
+
+    @FXML
+    public ChoiceBox operatorType;
+
+    @FXML
     public HBox accountDebitBox;
 
     @Autowired
@@ -130,8 +136,11 @@ public class AccountAddController implements Initializable {
         userUtil= BeanUtils.getBean(UserUtil.class);
         if("admin".equals(userUtil.getUserType())){
             accountType.getItems().addAll("现金","支付宝","微信","渤海");
+            operatoerTypeHbox.setVisible(true);
+            operatorType.getItems().addAll("单位","个人");
         }else {
             accountType.getItems().addAll("北京银行","现金");
+            operatoerTypeHbox.setVisible(false);
         }
 
 
@@ -182,6 +191,16 @@ public class AccountAddController implements Initializable {
             noAccountTime.setText("日期不可为空！");
             noAccountTime.setVisible(true);
             return;
+        }
+        if (userUtil == null) {
+            userUtil= BeanUtils.getBean(UserUtil.class);
+        }
+        if ("admin".equals(userUtil.getUserType())) {
+            if(!StringUtils.isEmpty(operatorType.getValue())){
+                accountInfo.setOperatorType((String) operatorType.getValue());
+            }
+        }else {
+            accountInfo.setOperatorType("公司");
         }
         if (!StringUtils.isEmpty(accountName.getValue())) {
             accountInfo.setAccountName((String) accountName.getValue());

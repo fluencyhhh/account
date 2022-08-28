@@ -152,6 +152,9 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
         if (StringUtils.isNotBlank(accountInfoForm.getAccountCredit())) {
             queryWrapper.eq("account_credit", accountInfoForm.getAccountCredit());
         }
+        if (StringUtils.isNotBlank(accountInfoForm.getOperatorType())) {
+            queryWrapper.eq("operator_type",accountInfoForm.getOperatorType());
+        }
         PageHelper.startPage(pageNo, 20);
         List<AccountInfo> accountInfoList = accountInfoMapper.selectList(queryWrapper);
         Page<AccountInfo> page = (Page<AccountInfo>) accountInfoList;

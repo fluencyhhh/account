@@ -188,10 +188,12 @@ public class AccountController implements Initializable {
         if ("admin".equals(userUtil.getUserType())) {
             adminQueryButton.setVisible(true);
             otherQueryButton.setVisible(false);
+            operatorType.setVisible(true);
             selectOperatorType.getItems().addAll("单位","个人");
         }else {
             adminQueryButton.setVisible(false);
             otherQueryButton.setVisible(true);
+            operatorType.setVisible(false);
         }
         selectOperatorType.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -276,6 +278,9 @@ public class AccountController implements Initializable {
         }
         if (StringUtils.isNotBlank(selectAccountCredit.getText())) {
             accountInfoForm.setAccountCredit(selectAccountCredit.getText());
+        }
+        if (StringUtils.isNotBlank((String) (selectOperatorType.getValue()))) {
+            accountInfoForm.setOperatorType((String) (selectOperatorType.getValue()));
         }
         Page<AccountInfo> page=accountInfoService.queryAccountInfoByParam(accountInfoForm,pageNo);
         List<AccountInfo> accountInfoList = page.getResult();
