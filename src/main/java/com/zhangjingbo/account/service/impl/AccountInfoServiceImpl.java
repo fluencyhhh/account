@@ -211,10 +211,64 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
         queryWrapper.eq("account_voucher",accountInfo.getAccountVoucher());
         List<AccountInfo> accountInfoList=accountInfoMapper.selectList(queryWrapper);
         if(accountInfoList==null || accountInfoList.isEmpty()){
+            String voucher=getVoucher(accountInfo);
+            accountInfo.setAccountVoucher(voucher);
             accountInfoMapper.insert(accountInfo);
         }else {
             accountInfoMapper.update(accountInfo,queryWrapper);
         }
         return 1;
+    }
+
+    //年份+单位/个人+是否经转+类型+6位序列号 4+2+2+2+6
+    private String getVoucher(AccountInfo accountInfo) {
+        StringBuffer result=new StringBuffer(DateUtils.getDate().substring(0,4));
+        if ("admin".equals(userUtil.getUserType())) {
+            result.append("01");
+        }else {
+            result.append("02");
+        }
+        if ("经转".equals(accountInfo.getAccountItem())) {
+            result.append("01");
+        }else {
+            result.append("00");
+        }
+        if ("现金".equals(accountInfo.getAccountType())) {
+            result.append("01");
+        } else if ("北京银行".equals(accountInfo.getAccountType())) {
+            result.append("02");
+        }else if ("支付宝".equals(accountInfo.getAccountType())) {
+            result.append("03");
+        }else if ("微信".equals(accountInfo.getAccountType())) {
+            result.append("04");
+        }else if ("渤海银行".equals(accountInfo.getAccountType())) {
+            result.append("05");
+        }
+        return result.append(accountInfo.getAccountVoucher()).toString();
+    }
+
+    @Override
+    public List<String> getItemName(String oldYear, String type) {
+        QueryWrapper<AccountInfo> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("to_char(account_time,'yyyy')",oldYear);
+        queryWrapper.eq("account_item",type);
+        queryWrapper.select("item_name","account_voucher");
+        List<AccountInfo> accountInfoList=accountInfoMapper.selectList(queryWrapper);
+        List<String> result=new ArrayList<>();
+        for (AccountInfo item:accountInfoList) {
+            result.add(item.getItemName()+"("+item.getAccountVoucher()+")");
+        }
+        return result;
+    }
+
+    @Override
+    public AccountInfo getAccount(AccountInfo accountInfo) {
+        QueryWrapper<AccountInfo> queryWrapper=new QueryWrapper<>();
+        queryWrapper.likeLeft("account_voucher",accountInfo.getOldVoucher());
+        List<AccountInfo> accountInfoList=accountInfoMapper.selectList(queryWrapper);
+        if (accountInfoList == null || accountInfoList.isEmpty()) {
+            return null;
+        }
+        return accountInfoList.get(0);
     }
 }

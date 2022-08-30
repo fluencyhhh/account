@@ -100,7 +100,13 @@ public class AccountInfo implements Serializable {
      * 经转对应年份
      */
     @TableField(value = "OLD_YEAR")
-    private Date oldYear;
+    private String oldYear;
+
+    /**
+     * 经转对应名称
+     */
+    @TableField(value = "OLD_NAME")
+    private String oldName;
 
     /**
      * 操作人编号

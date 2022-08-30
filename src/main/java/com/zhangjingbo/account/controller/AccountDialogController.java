@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 @FXMLController
@@ -57,10 +58,28 @@ public class AccountDialogController implements Initializable {
     public TextField accountCredit;
 
     @FXML
+    public TextField oldYear;
+
+    @FXML
+    public ChoiceBox oldName;
+
+    @FXML
+    public TextField oldVoucher;
+
+    @FXML
     public HBox accountCreditBox;
 
     @FXML
     public HBox accountDebitBox;
+
+    @FXML
+    public HBox oldHbox1;
+
+    @FXML
+    public HBox oldHbox2;
+
+    @FXML
+    public HBox oldHbox3;
 
     @Autowired
     public UserUtil userUtil;
@@ -112,13 +131,48 @@ public class AccountDialogController implements Initializable {
             }
         });
         userUtil=BeanUtils.getBean(UserUtil.class);
+
         if("admin".equals(userUtil.getUserType())){
-            accountType.getItems().addAll("现金","支付宝","微信","渤海");
+            accountType.getItems().addAll("现金","支付宝","微信","渤海银行");
         }else {
             accountType.getItems().addAll("北京银行","现金");
         }
 
+        oldYear.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(newValue!=null&&newValue.length()==4){
+                    List<String> itemNameList=getItemName(newValue,(String)(accountItem.getValue()));
+                    oldName.getItems().addAll(itemNameList);
+                }
+            }
+        });
 
+        oldName.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                String[] tests=((String) newValue).split("[(]");
+//                System.out.println(tests[1].substring(0,tests[1].length()-1));
+                oldVoucher.setText(tests[1].substring(0,tests[1].length()-1));
+            }
+        });
+
+
+    }
+
+    private List<String> getItemName(String newValue, String value) {
+        if("转出".equals(value)){
+            value="转入";
+        } else if ("投保金返还".equals(value)) {
+            value="投保金";
+        }else if ("汽油费返还".equals(value)) {
+            value="汽油费";
+        }
+        if (accountInfoService == null) {
+            accountInfoService=BeanUtils.getBean(AccountInfoService.class);
+        }
+        List<String> nameList=accountInfoService.getItemName(newValue,value);
+        return nameList;
     }
 
     private void setAccountItem(int number) {
@@ -148,7 +202,7 @@ public class AccountDialogController implements Initializable {
 
     public void editAccount(ActionEvent actionEvent) {
         AccountInfo accountInfo = new AccountInfo();
-        if (accountTime.getValue()==null) {
+        if (accountTime.getValue()!=null) {
             accountInfo.setAccountTime(DateUtils.getDateBuLocalDate(accountTime.getValue()));
         }
         if (StringUtils.isNoneBlank((String) (accountName.getValue()))) {

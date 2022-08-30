@@ -289,9 +289,14 @@ public class AccountController implements Initializable {
         if (StringUtils.isNotBlank(selectAccountCredit.getText())) {
             accountInfoForm.setAccountCredit(selectAccountCredit.getText());
         }
-        if (StringUtils.isNotBlank((String) (selectOperatorType.getValue()))) {
-            accountInfoForm.setOperatorType((String) (selectOperatorType.getValue()));
+        if ("admin".equals(userUtil.getUserType())) {
+            if (StringUtils.isNotBlank((String) (selectOperatorType.getValue()))) {
+                accountInfoForm.setOperatorType((String) (selectOperatorType.getValue()));
+            }
+        }else {
+            accountInfoForm.setOperatorType("单位");
         }
+
         Page<AccountInfo> page=accountInfoService.queryAccountInfoByParam(accountInfoForm,pageNo);
         List<AccountInfo> accountInfoList = page.getResult();
         initializeAccountInfoTable(accountInfoList);
@@ -353,30 +358,24 @@ public class AccountController implements Initializable {
         target.accountVoucher.setText(o.getAccountVoucher());
         target.accountVoucher.setDisable(true);
         target.itemDetail.setText(o.getItemDetail());
-        target.accountCredit.setText(o.getAccountCredit().toString());
-        target.accountDebit.setText(o.getAccountDebit().toString());
-
+        target.accountCredit.setText(o.getAccountCredit()!=null?o.getAccountCredit().toString():null);
+        target.accountDebit.setText(o.getAccountDebit()!=null?o.getAccountDebit().toString():null);
+        if("个人".equals(o.getOperatorType())){
+            target.accountType.getItems().addAll("现金","支付宝","微信","渤海银行");
+        } else if ("单位".equals(o.getOperatorType())) {
+            target.accountType.getItems().addAll("北京银行","现金");
+        }
+        target.oldYear.setText(o.getOldYear());
+        target.oldName.setValue(o.getOldName());
+        target.oldVoucher.setText(o.getOldVoucher());
+        if("转出".equals(o.getAccountItem())||"投保金返还".equals(o.getAccountItem())||"汽油费返还".equals(o.getAccountItem())){
+            target.oldHbox1.setVisible(true);
+            target.oldHbox2.setVisible(true);
+            target.oldHbox3.setVisible(true);
+        }
     }
 
     public void initializeAccountInfoTable(List<AccountInfo> accountInfoList) {
-//        buttonTable.setCellFactory(param -> new TableCell<AccountInfo, AccountInfo>() {
-//            private final Button deleteButton = new Button("删除");
-//
-//            @Override
-//            protected void updateItem(AccountInfo accountInfo, boolean empty) {
-//                super.updateItem(accountInfo, empty);
-//
-//                if (accountInfo == null) {
-//                    setGraphic(null);
-//                    return;
-//                }
-//
-//                setGraphic(deleteButton);
-//                deleteButton.setOnAction(
-//                        event -> getTableView().getItems().remove(accountInfo)
-//                );
-//            }
-//        });
 //        accountIdResult.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, String>("accountId"));
         accountTimeResult.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, String>("accountTime"));
         accountNameResult.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, String>("accountName"));

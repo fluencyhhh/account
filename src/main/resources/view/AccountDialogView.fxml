@@ -26,6 +26,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <HBox alignment="CENTER" focusTraversable="true" prefHeight="100.0" prefWidth="200.0" spacing="15.0">
@@ -111,7 +112,7 @@
                   <TextField fx:id="accountDebit" prefWidth="190.0" />
                </children>
             </HBox>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnSpan="3" GridPane.rowIndex="3">
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" GridPane.columnSpan="3" GridPane.rowIndex="4">
                <children>
                   <Label text="人物-明细-单位">
                      <padding>
@@ -121,8 +122,38 @@
                   <TextArea fx:id="itemDetail" prefHeight="63.0" prefWidth="666.0" />
                </children>
             </HBox>
+            <HBox fx:id="oldHbox1" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="13.0" visible="false" GridPane.rowIndex="3">
+               <children>
+                  <Label text="对应账单年度">
+                     <padding>
+                        <Insets left="-13.0" />
+                     </padding>
+                  </Label>
+                  <TextField fx:id="oldYear" prefWidth="160.0" />
+               </children>
+            </HBox>
+            <HBox fx:id="oldHbox2" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <children>
+                  <Label text="对应账单">
+                     <padding>
+                        <Insets left="-13.0" />
+                     </padding>
+                  </Label>
+                  <ChoiceBox fx:id="oldName" prefWidth="190.0" />
+               </children>
+            </HBox>
+            <HBox fx:id="oldHbox3" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="13.0" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="3">
+               <children>
+                  <Label text="对应账单编号">
+                     <padding>
+                        <Insets left="-13.0" />
+                     </padding>
+                  </Label>
+                  <TextField fx:id="oldVoucher" prefWidth="160.0" />
+               </children>
+            </HBox>
          </children>
       </GridPane>
-      <Button layoutX="724.0" layoutY="277.0" mnemonicParsing="false" onAction="#editAccount" style="-fx-background-color: #3be855;" text="保  存" textFill="WHITE" />
+      <Button layoutX="723.0" layoutY="282.0" mnemonicParsing="false" onAction="#editAccount" style="-fx-background-color: #3be855;" text="保  存" textFill="WHITE" />
    </children>
 </AnchorPane>

@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -73,16 +74,36 @@ public class AccountAddController implements Initializable {
     private Label saveSuccess;
 
     @FXML
+    public TextField oldYear;
+
+    @FXML
+    public ChoiceBox oldName;
+
+    @FXML
+    public TextField oldVoucher;
+
+    @FXML
     public HBox accountCreditBox;
 
     @FXML
     public HBox operatoerTypeHbox;
 
     @FXML
+    public HBox oldHbox1;
+
+    @FXML
+    public HBox oldHbox2;
+
+    @FXML
+    public HBox oldHbox3;
+
+    @FXML
     public ChoiceBox operatorType;
 
     @FXML
     public HBox accountDebitBox;
+
+
 
     @Autowired
     public UserUtil userUtil;
@@ -107,7 +128,6 @@ public class AccountAddController implements Initializable {
                     accountCreditBox.setVisible(false);
                     accountDebitBox.setVisible(true);
                 }
-                System.out.println(oldValue + "    " + newValue);
             }
         });
         accountItem.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
@@ -120,6 +140,15 @@ public class AccountAddController implements Initializable {
                     }else {
                         accountCreditBox.setVisible(true);
                         accountDebitBox.setVisible(false);
+                    }
+                    if(newValue.intValue()==1||newValue.intValue()==4||newValue.intValue()==6){
+                        oldHbox1.setVisible(true);
+                        oldHbox2.setVisible(true);
+                        oldHbox3.setVisible(true);
+                    }else {
+                        oldHbox1.setVisible(false);
+                        oldHbox2.setVisible(false);
+                        oldHbox3.setVisible(false);
                     }
                 }
                 if("其他".equals((String)(accountName.getValue()))){
@@ -135,7 +164,7 @@ public class AccountAddController implements Initializable {
         });
         userUtil= BeanUtils.getBean(UserUtil.class);
         if("admin".equals(userUtil.getUserType())){
-            accountType.getItems().addAll("现金","支付宝","微信","渤海");
+            accountType.getItems().addAll("现金","支付宝","微信","渤海银行");
             operatoerTypeHbox.setVisible(true);
             operatorType.getItems().addAll("单位","个人");
         }else {
@@ -144,7 +173,53 @@ public class AccountAddController implements Initializable {
         }
 
 
+        operatorType.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                accountType.getItems().clear();
+                if(0==newValue.intValue()){
+                    accountType.getItems().addAll("北京银行","现金");
+                }else if(1==newValue.intValue()){
+                    accountType.getItems().addAll("现金","支付宝","微信","渤海银行");
+                }
+            }
+        });
+
+        oldYear.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(newValue!=null&&newValue.length()==4){
+                    List<String> itemNameList=getItemName(newValue,(String)(accountItem.getValue()));
+                    oldName.getItems().addAll(itemNameList);
+                }
+            }
+        });
+
+        oldName.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                String[] tests=((String) newValue).split("[(]");
+//                System.out.println(tests[1].substring(0,tests[1].length()-1));
+                oldVoucher.setText(tests[1].substring(0,tests[1].length()-1));
+            }
+        });
     }
+
+    private List<String> getItemName(String newValue, String value) {
+        if("转出".equals(value)){
+            value="转入";
+        } else if ("投保金返还".equals(value)) {
+            value="投保金";
+        }else if ("汽油费返还".equals(value)) {
+            value="汽油费";
+        }
+        if (accountInfoService == null) {
+            accountInfoService=BeanUtils.getBean(AccountInfoService.class);
+        }
+        List<String> nameList=accountInfoService.getItemName(newValue,value);
+        return nameList;
+    }
+
 
     private void setAccountItem(int number) {
         accountItem.getItems().clear();
@@ -200,7 +275,7 @@ public class AccountAddController implements Initializable {
                 accountInfo.setOperatorType((String) operatorType.getValue());
             }
         }else {
-            accountInfo.setOperatorType("公司");
+            accountInfo.setOperatorType("单位");
         }
         if (!StringUtils.isEmpty(accountName.getValue())) {
             accountInfo.setAccountName((String) accountName.getValue());
@@ -237,9 +312,21 @@ public class AccountAddController implements Initializable {
         if (!StringUtils.isEmpty(accountCredit.getText())) {
             accountInfo.setAccountCredit(new BigDecimal(accountCredit.getText()));
         }
-        System.out.println(accountInfo);
+        if (!StringUtils.isEmpty(oldYear.getText())) {
+            accountInfo.setOldYear(oldYear.getText());
+        }
+        if (!StringUtils.isEmpty(oldName.getValue())) {
+            accountInfo.setOldName((String)(oldName.getValue()));
+        }
+        if (!StringUtils.isEmpty(oldVoucher.getText())) {
+            accountInfo.setOldVoucher(oldVoucher.getText());
+        }
         if (accountInfoService == null) {
             accountInfoService=BeanUtils.getBean(AccountInfoService.class);
+        }
+        AccountInfo result=accountInfoService.getAccount(accountInfo);
+        if (result != null) {
+            accountInfo.setOldVoucher(result.getAccountVoucher());
         }
         accountInfoService.editAccuntInfo(accountInfo);
         noAccountTime.setVisible(false);
@@ -248,7 +335,7 @@ public class AccountAddController implements Initializable {
     }
 
     /**
-     * 批量导入信息
+     * 批量导入信息OLD_NAME
      */
     @FXML
     public void saveBatchAccountInfo() {

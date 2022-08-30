@@ -23,4 +23,8 @@ public interface AccountInfoService extends IService<AccountInfo> {
     int deleteAccountInfo(AccountInfo o);
 
     int editAccuntInfo(AccountInfo accountInfo);
+
+    List<String> getItemName(String oldYear,String type);
+
+    AccountInfo getAccount(AccountInfo accountInfo);
 }
