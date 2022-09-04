@@ -68,8 +68,8 @@
          <children>
             <TableView fx:id="accountInfoTable" layoutX="3.0" layoutY="174.0" prefHeight="595.0" prefWidth="1724.0">
                <columns>
-                  <TableColumn fx:id="hBox" prefWidth="104.0" text="操作" />
-                  <TableColumn fx:id="accountTimeResult" prefWidth="87.0" style="-fx-alignment: CENTER;" text="时间" />
+                  <TableColumn fx:id="hBox" prefWidth="120.0" text="操作" />
+                  <TableColumn fx:id="accountTimeResult" prefWidth="100.0" style="-fx-alignment: CENTER;" text="时间" />
                   <TableColumn fx:id="accountNameResult" prefWidth="106.0" style="-fx-alignment: CENTER;" text="名称" />
                   <TableColumn fx:id="accountItemResult" prefWidth="108.0" style="-fx-alignment: CENTER;" text="名目" />
                   <TableColumn fx:id="itemDetailResult" prefWidth="257.0" style="-fx-alignment: CENTER;" text="人物-明细-单位" />

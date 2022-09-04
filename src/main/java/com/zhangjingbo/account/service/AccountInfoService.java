@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface AccountInfoService extends IService<AccountInfo> {
 
-    void saveAccountInfo(AccountInfo accountInfo);
+//    void saveAccountInfo(AccountInfo accountInfo);
 
-    BigDecimal queryCurrentBalance();
+    BigDecimal queryCurrentBalance(String balanceType);
 
     List<AccountInfo> queryAllAccountInfo();
 

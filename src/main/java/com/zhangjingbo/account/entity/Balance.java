@@ -23,4 +23,7 @@ public class Balance {
     @TableField(value = "OPERATEACCOUNTID")
     private String operateAccountId;
 
+    @TableField(value = "BALANCETYPE")
+    private String balanceType;
+
 }

@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,18 +37,131 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
     @Autowired
     private BalanceMapper balanceMapper;
 
-    @Override
-    public void saveAccountInfo(AccountInfo accountInfo) {
-        System.out.println("-------------"+accountInfo);
-        //操作余额
-        if (balanceMapper.selectCount(new QueryWrapper<>())==0){
-            Balance balance=new Balance();
-            balance.setId(UUIDUtil.get32UUID());
-            balance.setBalance(new BigDecimal(0));
-            balance.setOperateTime(new Date());
-            balanceMapper.insert(balance);
+//    @Override
+//    public void saveAccountInfo(AccountInfo accountInfo) {
+//        System.out.println("-------------"+accountInfo);
+//        //操作余额
+//        if (balanceMapper.selectCount(new QueryWrapper<>())==0){
+//            Balance balance=new Balance();
+//            balance.setId(UUIDUtil.get32UUID());
+//            balance.setBalance(new BigDecimal(0));
+//            balance.setOperateTime(new Date());
+//            balanceMapper.insert(balance);
+//        }
+//        BigDecimal currentBalance = queryCurrentBalance();
+//        System.out.println(currentBalance);
+//        BigDecimal newBalance = currentBalance;
+//        if (accountInfo.getAccountCredit()!=null){
+//            newBalance = newBalance.subtract(accountInfo.getAccountCredit());
+//        }else {
+//            accountInfo.setAccountCredit(new BigDecimal(0));
+//        }
+//        if (accountInfo.getAccountDebit()!=null){
+//            newBalance = newBalance.add(accountInfo.getAccountDebit());
+//        }else {
+//            accountInfo.setAccountDebit(new BigDecimal(0));
+//        }
+//        accountInfo.setBalance(newBalance);
+//        Balance balance = new Balance();
+//        balance.setOperateTime(new Date());
+//        balance.setBalance(newBalance);
+//        balance.setOperateAccountId(accountInfo.getAccountId());
+//        insertAccountInfoAndBalance(accountInfo,balance);
+//    }
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void insertAccountInfoAndBalance(AccountInfo accountInfo,Balance balance,BigDecimal diffBalance,String balanceType){
+        balanceMapper.insert(balance);
+        accountInfoMapper.insert(accountInfo);
+        //查找此新增记录后时间的所有账单，进行余额变更
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String accountDate = sdf.format(accountInfo.getAccountTime());
+        List<AccountInfo> accountInfoList = new ArrayList<>();
+        if ("个人".equals(balanceType)){
+            accountInfoList = accountInfoMapper.queryAccountInfoByDate(accountDate,"个人",null);
+        }else {
+            if ("单位现金".equals(balanceType)){
+                accountInfoList = accountInfoMapper.queryAccountInfoByDate(accountDate,"单位","现金");
+            }else {
+                accountInfoList = accountInfoMapper.queryAccountInfoByDate(accountDate,"单位","北京银行");
+            }
         }
-        BigDecimal currentBalance = queryCurrentBalance();
+        for (AccountInfo updateInfo:accountInfoList){
+            QueryWrapper<AccountInfo> queryWrapper=new QueryWrapper<>();
+            queryWrapper.eq("account_id",updateInfo.getAccountId());
+            updateInfo.setBalance(updateInfo.getBalance().add(diffBalance));
+            accountInfoMapper.update(updateInfo,queryWrapper);
+        }
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void deleteAccountInfoAndBalance(AccountInfo accountInfo,Balance balance,BigDecimal diffBalance,String balanceType){
+        balanceMapper.insert(balance);
+        //删除对应记录
+        QueryWrapper<AccountInfo> queryWrapper=new QueryWrapper();
+        queryWrapper.eq("account_id",accountInfo.getAccountId());
+        accountInfoMapper.delete(queryWrapper);
+        //查找此删除记录后时间的所有账单，进行余额变更
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String accountDate = sdf.format(accountInfo.getAccountTime());
+        String operTime = sdf2.format(accountInfo.getOperatTime());
+        List<AccountInfo> accountInfoList = new ArrayList<>();
+        if ("个人".equals(balanceType)){
+            accountInfoList = accountInfoMapper.queryAccountInfoByDateTime(accountDate,operTime,"个人",null);
+        }else {
+            if ("单位现金".equals(balanceType)){
+                accountInfoList = accountInfoMapper.queryAccountInfoByDateTime(accountDate,operTime,"单位","现金");
+            }else {
+                accountInfoList = accountInfoMapper.queryAccountInfoByDateTime(accountDate,operTime,"单位","北京银行");
+            }
+        }
+        for (AccountInfo updateInfo:accountInfoList){
+            queryWrapper=new QueryWrapper<>();
+            queryWrapper.eq("account_id",updateInfo.getAccountId());
+            updateInfo.setBalance(updateInfo.getBalance().add(diffBalance));
+            accountInfoMapper.update(updateInfo,queryWrapper);
+        }
+    }
+
+    //新增账单信息与余额信息操作
+    public void addAccountInfoAndBalance(AccountInfo accountInfo){
+//        if (balanceMapper.selectCount(new QueryWrapper<>())==0){
+//            Balance balance=new Balance();
+//            balance.setId(UUIDUtil.get32UUID());
+//            balance.setBalance(new BigDecimal(0));
+//            balance.setOperateTime(new Date());
+//            balanceMapper.insert(balance);
+//        }
+        String balanceType = "";
+        if ("个人".equals(accountInfo.getOperatorType())){
+            balanceType = "个人";
+        }else {
+            if ("现金".equals(accountInfo.getAccountType())){
+                balanceType = "单位现金";
+            }else {
+                balanceType = "单位银行";
+            }
+        }
+        BigDecimal currentBalance = queryCurrentBalance(balanceType);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String accountDate = sdf.format(accountInfo.getAccountTime());
+        String nowTime = sdf2.format(new Date());
+        BigDecimal lastBalance = new BigDecimal(0);
+        if ("个人".equals(balanceType)){
+            lastBalance = accountInfoMapper.queryBalanceByTime(accountDate,nowTime,"个人",null);
+        }else {
+            if ("单位现金".equals(balanceType)){
+                lastBalance = accountInfoMapper.queryBalanceByTime(accountDate,nowTime,"单位","现金");
+            }else {
+                lastBalance = accountInfoMapper.queryBalanceByTime(accountDate,nowTime,"单位","北京银行");
+            }
+        }
+        if (lastBalance==null){
+            lastBalance = new BigDecimal(0);
+        }
         System.out.println(currentBalance);
         BigDecimal newBalance = currentBalance;
         if (accountInfo.getAccountCredit()!=null){
@@ -60,24 +174,71 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
         }else {
             accountInfo.setAccountDebit(new BigDecimal(0));
         }
-        accountInfo.setBalance(newBalance);
+//        if ("insert".equals(operType)){
+//
+//        }else if ("delete".equals(operType)){
+//            if (accountInfo.getAccountCredit()!=null){
+//                newBalance = newBalance.add(accountInfo.getAccountCredit());
+//            }else {
+//                accountInfo.setAccountCredit(new BigDecimal(0));
+//            }
+//            if (accountInfo.getAccountDebit()!=null){
+//                newBalance = newBalance.subtract(accountInfo.getAccountDebit());
+//            }else {
+//                accountInfo.setAccountDebit(new BigDecimal(0));
+//            }
+//        }
+        BigDecimal diffBalance = newBalance.subtract(currentBalance);
+        BigDecimal accountBalance = lastBalance.add(diffBalance);
+        accountInfo.setBalance(accountBalance);
         Balance balance = new Balance();
         balance.setOperateTime(new Date());
         balance.setBalance(newBalance);
         balance.setOperateAccountId(accountInfo.getAccountId());
-        insertAccountInfoAndBalance(accountInfo,balance);
+        balance.setBalanceType(balanceType);
+        insertAccountInfoAndBalance(accountInfo,balance,diffBalance,balanceType);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void insertAccountInfoAndBalance(AccountInfo accountInfo,Balance balance){
-        balanceMapper.insert(balance);
+    //删除账单信息与余额信息操作
+    public void delAccountInfoAndBalance(AccountInfo accountInfo){
+        String balanceType = "";
+        if ("个人".equals(accountInfo.getOperatorType())){
+            balanceType = "个人";
+        }else {
+            if ("现金".equals(accountInfo.getAccountType())){
+                balanceType = "单位现金";
+            }else {
+                balanceType = "单位银行";
+            }
+        }
+        BigDecimal currentBalance = queryCurrentBalance(balanceType);
+        System.out.println(currentBalance);
+        BigDecimal newBalance = currentBalance;
+        if (accountInfo.getAccountCredit()!=null){
+            newBalance = newBalance.add(accountInfo.getAccountCredit());
+        }
+        if (accountInfo.getAccountDebit()!=null){
+            newBalance = newBalance.subtract(accountInfo.getAccountDebit());
+        }
+        BigDecimal diffBalance = newBalance.subtract(currentBalance);
+        Balance balance = new Balance();
+        balance.setOperateTime(new Date());
+        balance.setBalance(newBalance);
+        balance.setOperateAccountId("已删除记录");
+        balance.setBalanceType(balanceType);
+        System.out.println("balance："+balance);
+        deleteAccountInfoAndBalance(accountInfo,balance,diffBalance,balanceType);
+    }
 
-        accountInfoMapper.saveAccountInfo(accountInfo);
+    //更新账单信息与余额信息操作
+    public void changeAccountInfoAndBalance(AccountInfo oldInfo,AccountInfo newInfo){
+        delAccountInfoAndBalance(oldInfo);
+        addAccountInfoAndBalance(newInfo);
     }
 
     @Override
-    public BigDecimal queryCurrentBalance() {
-        return balanceMapper.queryCurrentBalance();
+    public BigDecimal queryCurrentBalance(String balanceType) {
+        return balanceMapper.queryCurrentBalance(balanceType);
     }
 
     @Override
@@ -155,6 +316,7 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
         if (StringUtils.isNotBlank(accountInfoForm.getOperatorType())) {
             queryWrapper.eq("operator_type",accountInfoForm.getOperatorType());
         }
+        queryWrapper.orderBy(true,false,"account_time","OPERAT_TIME");
         PageHelper.startPage(pageNo, 20);
         List<AccountInfo> accountInfoList = accountInfoMapper.selectList(queryWrapper);
         Page<AccountInfo> page = (Page<AccountInfo>) accountInfoList;
@@ -198,9 +360,10 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
         if (StringUtils.isBlank(o.getAccountId())) {
             return 0;
         }
-        QueryWrapper<AccountInfo> queryWrapper=new QueryWrapper();
-        queryWrapper.eq("account_id",o.getAccountId());
-        accountInfoMapper.delete(queryWrapper);
+//        QueryWrapper<AccountInfo> queryWrapper=new QueryWrapper();
+//        queryWrapper.eq("account_id",o.getAccountId());
+//        accountInfoMapper.delete(queryWrapper);
+        delAccountInfoAndBalance(o);
         return 1;
     }
 
@@ -213,9 +376,13 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
         if(accountInfoList==null || accountInfoList.isEmpty()){
             String voucher=getVoucher(accountInfo);
             accountInfo.setAccountVoucher(voucher);
-            accountInfoMapper.insert(accountInfo);
+            accountInfo.setOperatTime(new Date());
+//            accountInfoMapper.insert(accountInfo);
+            addAccountInfoAndBalance(accountInfo);
         }else {
-            accountInfoMapper.update(accountInfo,queryWrapper);
+            AccountInfo oldInfo = accountInfoList.get(0);
+            changeAccountInfoAndBalance(oldInfo,accountInfo);
+//            accountInfoMapper.update(accountInfo,queryWrapper);
         }
         return 1;
     }

@@ -388,7 +388,9 @@ public class AccountController implements Initializable {
         accountNumberResult.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, String>("accountNumber"));
         accountDebitResult.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, Integer>("accountDebit"));
         accountCreditResult.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, Integer>("accountCredit"));
-        balanceResult.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, Integer>("balance"));
+        if ("admin".equals(userUtil.getUserType())) {
+            balanceResult.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, Integer>("balance"));
+        }
         hBox.setCellValueFactory(new PropertyValueFactory<AccountInfoVo, HBox>("hBox"));
         accountInfoTable.getItems().setAll(getAccountInfoVo(accountInfoList));
 

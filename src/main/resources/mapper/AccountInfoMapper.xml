@@ -82,4 +82,45 @@
         </if>
         order by ACCOUNT_TIME asc
     </select>
+
+    <select id="queryAccountInfoByDate" resultType="com.zhangjingbo.account.entity.AccountInfo">
+        select * from MAIN_ACCOUNT where ACCOUNT_TIME > #{startTime}
+        <if test="operatorType != null  and operatorType != ''">
+            and OPERATOR_TYPE = #{operatorType}
+        </if>
+        <if test="accountType != null  and accountType != ''">
+            and ACCOUNT_TYPE = #{accountType}
+        </if>
+    </select>
+
+    <select id="queryAccountInfoByDateTime" resultType="com.zhangjingbo.account.entity.AccountInfo">
+        select * from MAIN_ACCOUNT
+        where ACCOUNT_TIME > #{startTime}
+           or ACCOUNT_ID = (select ACCOUNT_ID from MAIN_ACCOUNT
+           where ACCOUNT_TIME = #{startTime} and OPERAT_TIME > #{operTime}
+        <if test="operatorType != null  and operatorType != ''">
+            and OPERATOR_TYPE = #{operatorType}
+        </if>
+        <if test="accountType != null  and accountType != ''">
+            and ACCOUNT_TYPE = #{accountType}
+        </if>)
+        <if test="operatorType != null  and operatorType != ''">
+            and OPERATOR_TYPE = #{operatorType}
+        </if>
+        <if test="accountType != null  and accountType != ''">
+            and ACCOUNT_TYPE = #{accountType}
+        </if>
+    </select>
+
+    <select id="queryBalanceByTime" resultType="java.math.BigDecimal">
+        select balance from MAIN_ACCOUNT
+        where ACCOUNT_TIME = #{startTime} and OPERAT_TIME &lt; #{operTime}
+        <if test="operatorType != null  and operatorType != ''">
+            and OPERATOR_TYPE = #{operatorType}
+        </if>
+        <if test="accountType != null  and accountType != ''">
+            and ACCOUNT_TYPE = #{accountType}
+        </if>
+        order by OPERAT_TIME desc limit 1
+    </select>
 </mapper>

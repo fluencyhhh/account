@@ -4,7 +4,7 @@
 <mapper namespace="com.zhangjingbo.account.mapper.BalanceMapper">
 
     <select id="queryCurrentBalance" resultType="java.math.BigDecimal">
-        select balance from BALANCE order by operateTime desc
+        select balance from BALANCE where balanceType = #{balanceType} order by operateTime desc limit 1
     </select>
 
 </mapper>
