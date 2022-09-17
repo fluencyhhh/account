@@ -16,7 +16,7 @@ public interface AccountInfoService extends IService<AccountInfo> {
 
     List<AccountInfo> queryAllAccountInfo();
 
-    Page<AccountInfo> queryAccountInfoByParam(AccountInfoForm accountInfoForm, Integer pageNo);
+    Page<AccountInfo> queryAccountInfoByParam(AccountInfoForm accountInfoForm, Integer pageNo, Integer pageSize);
 
     void exportAccountInfoByParam(AccountInfoForm accountInfoForm);
 

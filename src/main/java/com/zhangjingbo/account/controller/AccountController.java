@@ -296,8 +296,7 @@ public class AccountController implements Initializable {
         }else {
             accountInfoForm.setOperatorType("单位");
         }
-
-        Page<AccountInfo> page=accountInfoService.queryAccountInfoByParam(accountInfoForm,pageNo);
+        Page<AccountInfo> page=accountInfoService.queryAccountInfoByParam(accountInfoForm,pageNo,20);
         List<AccountInfo> accountInfoList = page.getResult();
         initializeAccountInfoTable(accountInfoList);
         pagination.setPageCount(page.getPages());
@@ -407,12 +406,31 @@ public class AccountController implements Initializable {
         if (selectAccountTimeEnd.getValue()!=null) {
             accountInfoForm.setAccountTimeEnd(DateUtils.localDateToString(selectAccountTimeEnd.getValue()));
         }
+        if (StringUtils.isNotBlank((String)(selectTimeBetween.getValue()))) {
+            accountInfoForm.setAccountTimeBetween((String)(selectTimeBetween.getValue()));
+        }
+        if(StringUtils.isNotBlank((String)(selectTimeBetween.getValue()))&&(null==userUtil.getUserType()||!"admin".equals(userUtil.getUserType()))){
+            if(StringUtils.isNotBlank(accountInfoForm.getAccountTimeStart())&&DateUtils.getCurrYearFirst().compareTo(accountInfoForm.getAccountTimeStart())>0){
+                Alert alert=new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("提示");
+                alert.setHeaderText(null);
+                alert.setContentText("非管理员只能导出当年账目");
+                alert.showAndWait();
+                return;
+            }
+            if(StringUtils.isNotBlank(accountInfoForm.getAccountTimeEnd())&&DateUtils.getCurrYearLast().compareTo(accountInfoForm.getAccountTimeEnd())>0){
+                Alert alert=new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("提示");
+                alert.setHeaderText(null);
+                alert.setContentText("非管理员只能导出当年账目");
+                alert.showAndWait();
+                return;
+            }
+        }
         if (StringUtils.isNotBlank((String)(selectAccountName.getValue()))) {
             accountInfoForm.setAccountName((String)(selectAccountName.getValue()));
         }
-        if (StringUtils.isNotBlank((String)(selectTimeBetween.getValue()))) {
-            accountInfoForm.setAccountName((String)(selectTimeBetween.getValue()));
-        }
+
         if (StringUtils.isNotBlank((String)(selectAccountItem.getValue()))) {
             accountInfoForm.setAccountItem((String)(selectAccountItem.getValue()));
         }
@@ -440,6 +458,14 @@ public class AccountController implements Initializable {
         if (StringUtils.isNotBlank(selectAccountCredit.getText())) {
             accountInfoForm.setAccountCredit(selectAccountCredit.getText());
         }
+        if ("admin".equals(userUtil.getUserType())) {
+            if (StringUtils.isNotBlank((String) (selectOperatorType.getValue()))) {
+                accountInfoForm.setOperatorType((String) (selectOperatorType.getValue()));
+            }
+        }else {
+            accountInfoForm.setOperatorType("单位");
+        }
+
         accountInfoService.exportAccountInfoByParam(accountInfoForm);
     }
 

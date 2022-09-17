@@ -14,12 +14,15 @@ import com.zhangjingbo.account.util.DateUtils;
 import com.zhangjingbo.account.util.ExcelUtils;
 import com.zhangjingbo.account.util.UUIDUtil;
 import com.zhangjingbo.account.util.UserUtil;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -247,7 +250,7 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
     }
 
     @Override
-    public Page<AccountInfo> queryAccountInfoByParam(AccountInfoForm accountInfoForm, Integer pageNo) {
+    public Page<AccountInfo> queryAccountInfoByParam(AccountInfoForm accountInfoForm, Integer pageNo, Integer pageSize) {
         String userType = userUtil.getUserType();
         QueryWrapper<AccountInfo> queryWrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(accountInfoForm.getAccountTimeStart())) {
@@ -317,7 +320,7 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
             queryWrapper.eq("operator_type",accountInfoForm.getOperatorType());
         }
         queryWrapper.orderBy(true,false,"account_time","OPERAT_TIME");
-        PageHelper.startPage(pageNo, 20);
+        PageHelper.startPage(pageNo, pageSize);
         List<AccountInfo> accountInfoList = accountInfoMapper.selectList(queryWrapper);
         Page<AccountInfo> page = (Page<AccountInfo>) accountInfoList;
         return page;
@@ -325,13 +328,22 @@ public class AccountInfoServiceImpl extends ServiceImpl<AccountInfoMapper,Accoun
 
     @Override
     public void exportAccountInfoByParam(AccountInfoForm accountInfoForm) {
-        //获取数据存入List<Map>
-        //数据来源
-        List<AccountInfo> accountInfoList = queryAccountInfoByParam(accountInfoForm, 0).getResult();
         //设置路径
         String filePath = "D:\\";
         //文件名
         String fileName = "报账信息"+ DateUtils.getCurrentTime() + ".xlsx";
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File(filePath));
+        fileChooser.setInitialFileName(fileName);
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XLSX","*.xlsx"));
+//        fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter(".xlsx"));
+        File file = fileChooser.showSaveDialog(new Stage());
+        filePath = file.getAbsolutePath().substring(0,file.getAbsolutePath().lastIndexOf("\\")+1);
+        fileName = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("\\")+1,file.getAbsolutePath().length());
+        //获取数据存入List<Map>
+        //数据来源
+        List<AccountInfo> accountInfoList = queryAccountInfoByParam(accountInfoForm, 1,1000).getResult();
         //设置表头
         String[] header = new String[] { "日期", "名称", "名目", "人物--明细--单位", "项目名称", "经办人", "类型", "凭证", "号码", "借金额", "贷金额", "余额" };
         List<String[]> excelData = new ArrayList<>();
